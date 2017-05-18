@@ -34,7 +34,7 @@ public class Grid {
     }
 
     public enum EvalTypes {
-        HUMAN, GRADIENT, STDEV, RAINBOW, SQUARES, X, INVERSE_X
+        HUMAN, GRADIENT, STDEV, RAINBOW, SQUARES, X, INVERSE_X, SIM_NEIGHBOR
     }
 
     public static final int numColors = DiscreteColor.values().length;
@@ -150,6 +150,21 @@ public class Grid {
         return fitness;
     }
 
+    private int simNeighborsEval() {
+        int fitness = imageDimension * imageDimension;
+        for(int x = 1; x < imageDimension - 1; x++) {
+            for(int y = 1; y < imageDimension - 1; y++) {
+                int cur = colors.get(x * y + x);
+                int dif1 = colors.get((x - 1) * y + (x - 1)) - cur;
+                int dif2 = colors.get((x - 1) * (y - 1) + (x - 1)) - cur;
+                int dif3 = colors.get((x + 1) * (y + 1) + (x + 1)) - cur;
+                int dif4 = colors.get((x + 1) * y + (x + 1)) - cur;
+                if(dif1 > 0 && dif1 < 4 && dif2 > 0 && dif2 < 4 && dif3 > 0 && dif3 < 4 && dif4 > 0 && dif4 < 4) fitness--;
+            }
+        }
+        return fitness;
+    }
+
     // determine the fitness of the current state of the grid. fitness is (maxScore+1) - score
     // where score is the number of sides of blocks that are touching a wall
     public int calcFitness(EvalTypes evalType) {
@@ -168,6 +183,8 @@ public class Grid {
                 return xEVal();
             case INVERSE_X:
                 return inverseXEval();
+            case SIM_NEIGHBOR:
+                return simNeighborsEval();
         }
         return 0;
     }
