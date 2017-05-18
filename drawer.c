@@ -44,7 +44,7 @@ void getColor(double index, double blankColor[3]) {
 
 void drawImage() {
     double color[3];
-    char chr = fgetc(file);
+    char chr = fgetc(stdin);
     char num[30];
     for (int i = 0; i < 30; i++) {
         num[i] = '\0';
@@ -53,6 +53,7 @@ void drawImage() {
     for (int y = 0; y < 12; y++) {
         for (int x = 0; x < 12; x++) {
             
+            // go through file until next num
             while (chr == ' ' || chr == '\n') {
                 chr = fgetc(stdin);
             }
@@ -60,17 +61,13 @@ void drawImage() {
             int i = 0;
             while (chr != ' ' && chr != '\n' && chr != EOF) {
                 num[i] = chr;
-                chr = fgetc(file);
+                chr = fgetc(stdin);
                 i++;
             }
             
             getColor(atof(num), color);
             pixSetRGB(x, y, color[0], color[1], color[2]);
-            
-            // go through file until next num
-            while (chr == ' ' || chr == '\n') {
-                chr = fgetc(file);
-            }
+
             // reset num for next color value
             for (int i = 0; i < 30; i++) {
                 num[i] = '\0';
