@@ -37,6 +37,7 @@ double colorList[12][3] = {{1.0, 0.0, 0.0},
                            {1.0, 0.0, 0.5}};
 
 void getColor(double index, double blankColor[3]) {
+    printf("%f\n", index);
     for (int i = 0; i < 3; i++) {
         blankColor[i] = colorList[(int)index][i];
     }
@@ -50,11 +51,16 @@ void drawImage(FILE *file) {
         num[i] = '\0';
     }
     
-    for (int x = 0; x < 512; x++) {
-        for (int y = 0; x <512; x++) {
-            
+    for (int y = 0; y < 12; y++) {
+        for (int x = 0; x < 12; x++) {
+            printf("chr: %c\n", chr);
+            fflush(stdout);
+            while (chr == ' ' || chr == '\n') {
+                chr = fgetc(file);
+            }
+
             int i = 0;
-            while (chr != ' ' || chr != '\n') {
+            while (chr != ' ' && chr != '\n' && chr != EOF) {
                 num[i] = chr;
                 chr = fgetc(file);
                 i++;
@@ -77,7 +83,7 @@ void drawImage(FILE *file) {
 
 int main() {    
     // Makes a 512 x 512 window with the title 'Pixel Graphics'. 
-	if (pixInitialize(12, 12, "Pixel Graphics") != 0)
+	if (pixInitialize(512, 512, "Pixel Graphics") != 0)
 		return 1;
 	else {
 		/* Clear the window to black. */
@@ -92,6 +98,7 @@ int main() {
     }  
 
     drawImage(file);
+    pixSetRGB(5, 5, 1, 1, 1);
     fclose(file);
 
     pixRun();
