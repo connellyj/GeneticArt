@@ -90,13 +90,13 @@ int main() {
 		pixClearRGB(0.0, 0.0, 0.0);
     }
     
-     Sets up the file for window size
-    FILE *window;
-    if ((file = fopen("windowSize.txt", "r")) == NULL) {
-        printf("No such file\n");
-        exit(1);
-    }
-    fgets(window, );
+//     Sets up the file for window size
+//    FILE *window;
+//    if ((file = fopen("windowSize.txt", "r")) == NULL) {
+//        printf("No such file\n");
+//        exit(1);
+//    }
+//    fgets(window, );
 
 
     drawImage();

@@ -65,14 +65,9 @@ class Tartarus extends GPRun {
     Tartarus(String baseName) { super(baseName, true); }
 
     //main application function
-    public static void main(String[] args) {
+    public static void startGA() {
 
-        //compute base file name from command line parameter
-        String baseName;
-        if (args.length == 1)
-            baseName = args[0];
-        else
-            baseName = "tartarus";
+        String baseName = "tartarus";
 
          //clear simulation files if exist
         try {

@@ -28,7 +28,7 @@ ComplexityAffectsFitness  = false
 CheckpointGens            = 10
 TestCheckpoint            = true
 NumTestImages             = 10
-ImageDimension            = 20
+ImageDimension            = 12
 
 RPB:  inc(1) add(2) max(2) rand NW W N y x
 

@@ -1,5 +1,15 @@
 package Tartarus1;
 
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
+
+import java.awt.image.BufferedImage;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -21,7 +31,6 @@ public class Grid {
     public static final int WEST = 6;
     public static final int NORTH_WEST = 7;
     public static final int RANDOM = 8;
-
 
     public enum DiscreteColor {
         RED, ORANGE, YELLOW, LIME, GREEN, SEA_GREEN, LIGHT_BLUE, MEDIUM_BLUE, BLUE, PURPLE, MAGENTA, PINK
@@ -64,23 +73,23 @@ public class Grid {
         }catch(IOException exception){
             System.out.println("Error writing to evaluate.txt");
         }
-        ProcessBuilder pb = new ProcessBuilder("./drawer", "<", "evaluate.txt");
-        pb.directory(new File("../../"));
-        File log = new File("log");
-        pb.redirectErrorStream(true);
-        pb.redirectOutput(ProcessBuilder.Redirect.appendTo(log));
-        try {
-            pb.start();
-        } catch (IOException e) {
-            System.out.println("Error starting process");
-            e.printStackTrace();
+        BufferedImage canvas = new BufferedImage(imageDimension, imageDimension, BufferedImage.TYPE_INT_RGB);
+        for(int x = 0; x < imageDimension; x++) {
+            for(int y = 0; y < imageDimension; y++) {
+                canvas.setRGB(x, y, 5);
+            }
         }
+        Image image = SwingFXUtils.toFXImage(canvas, null);
+        ImageView imageView = new ImageView(image);
+        Main.stackPane = new StackPane();
+        Main.stackPane.getChildren().add(imageView);
         return getFitnessFromUser();
     }
 
     private int getFitnessFromUser() {
         int fitness;
         Scanner scanner = new Scanner(System.in);
+        System.out.println();
         System.out.println("Enter a score between 1 and 10 where 1 is the best");
         try {
             fitness = Integer.parseInt(scanner.nextLine());
