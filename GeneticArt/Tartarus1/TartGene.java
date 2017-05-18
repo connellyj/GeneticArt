@@ -49,6 +49,9 @@ public class TartGene extends GPGene {
 
         case Grid.INC:
             return ( ( (TartGene)get(0) ).evaluate(cfg, gp, pixelInfo) + 1) % 3;
+        
+        case Grid.ABS:
+            return abs(((TartGene)get(0)).evaluate(cfg, gp, pixelInfo));
 
         case Grid.ADD:
             result = ( (TartGene)get(0) ).evaluate(cfg, gp, pixelInfo) + ( (TartGene)get(1) ).evaluate(cfg, gp, pixelInfo);
@@ -59,6 +62,28 @@ public class TartGene extends GPGene {
             arg2 = ( (TartGene)get(1) ).evaluate(cfg, gp, pixelInfo);
             if (arg1 > arg2) return arg1;
             else return arg2;
+                
+        case AVG2:
+            arg1 = ( (TartGene)get(0) ).evaluate(cfg, gp, pixelInfo);
+            arg2 = ( (TartGene)get(1) ).evaluate(cfg, gp, pixelInfo);
+            return (arg1 + arg2) / 2;
+            
+        case AVG3:
+            arg1 = ( (TartGene)get(0) ).evaluate(cfg, gp, pixelInfo);
+            arg2 = ( (TartGene)get(1) ).evaluate(cfg, gp, pixelInfo);
+            arg3 = ( (TartGene)get(2) ).evaluate(cfg, gp, pixelInfo);
+            return (arg1 + arg2 + arg3) / 3;
+                
+        case IF:
+            arg1 = ( (TartGene)get(0) ).evaluate(cfg, gp, pixelInfo);
+            arg2 = ( (TartGene)get(1) ).evaluate(cfg, gp, pixelInfo);
+            arg3 = ( (TartGene)get(2) ).evaluate(cfg, gp, pixelInfo);
+            if (floor(arg1) % 2 == 0) {
+                return arg2;
+            }
+            else {
+                return arg3;
+            }
 
         case Grid.X:
             return pixelInfo.xCoord;

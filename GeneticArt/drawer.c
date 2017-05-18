@@ -52,11 +52,9 @@ void drawImage() {
     for (int i = 0; i < 30; i++) {
         num[i] = '\0';
     }
-    
-    
-    
-    for (int y = 0; y < 12; y++) {
-        for (int x = 0; x < 12; x++) {
+
+    for (int y = 0; y < width; y++) {
+        for (int x = 0; x < height; x++) {
             
             // go through file until next num
             while (chr == ' ' || chr == '\n') {
@@ -81,22 +79,42 @@ void drawImage() {
     }
 }
 
-int main() {    
-    // Makes a 512 x 512 window with the title 'Pixel Graphics'. 
-	if (pixInitialize(512, 512, "Pixel Graphics") != 0)
+int main() {  
+    // Sets up the file for window size
+    FILE *window;
+    if ((window = fopen("windowSize.txt", "r")) == NULL) {
+        printf("No such file\n");
+        exit(1);
+    }
+    // Reads window size ands stores in global variables
+    char buff1[10];
+    char buff2[10];
+    fscanf(window, "%s", buff1);
+    fscanf(window, "%s", buff2);
+    width = atof(buff1);
+    height = atof(buff2);
+    fclose(window);
+    
+    /* makes sure the window size is a power of 2 (or else
+     * it will break), then creates window dims so that the image
+     * will fit */
+    int i = 2;
+    while (i < width) {
+        i = 2 * i;
+    }
+    int j = 2;
+    while (j < height) {
+        j = 2 * j;
+    }
+    
+    
+    // Makes a i x j window with the title 'Pixel Graphics'. 
+	if (pixInitialize(i, j, "Pixel Graphics") != 0)
 		return 1;
 	else {
 		/* Clear the window to black. */
 		pixClearRGB(0.0, 0.0, 0.0);
     }
-    
-//     Sets up the file for window size
-//    FILE *window;
-//    if ((file = fopen("windowSize.txt", "r")) == NULL) {
-//        printf("No such file\n");
-//        exit(1);
-//    }
-//    fgets(window, );
 
 
     drawImage();
