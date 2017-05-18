@@ -56,7 +56,19 @@ public class TartGP extends GP {
             // evaluate main tree for 80 steps of the dozer
             // Maybe I should use a grid thing but with color
             for (int i = 0; i < tcfg.ImageDimension * tcfg.ImageDimension; i++) {
-                int result = ((TartGene)get(0)).evaluate(tcfg, this);
+                int x = i % tcfg.ImageDimension;
+                int y = i / tcfg.ImageDimension;
+                int north = 0;
+                int northIndex = i - tcfg.ImageDimension;
+                if(northIndex >= 0) north = tcfg.dozerGrid.colors.get(northIndex);
+                int west = 0;
+                int westIndex = i - 1;
+                if((westIndex + 1) % tcfg.ImageDimension != 0 & westIndex >= 0) west = tcfg.dozerGrid.colors.get(westIndex);
+                int northWest = 0;
+                int northWestIndex = northIndex - 1;
+                if((northWestIndex + 1) % tcfg.ImageDimension != 0 && northWestIndex >= 0) northWest = tcfg.dozerGrid.colors.get(northWestIndex);
+                PixelInfo pixelInfo = new PixelInfo(x, y, north, west, northWest);
+                int result = ((TartGene)get(0)).evaluate(tcfg, this, pixelInfo);
                 tcfg.dozerGrid.colorPixel(Math.abs(result) % Grid.numColors);
             }
             totFit += tcfg.dozerGrid.calcFitness();
@@ -109,7 +121,19 @@ public class TartGP extends GP {
 
             //evaluate main tree for 80 steps of the dozer, printing grid after each move
             for (int i=0; i<tcfg.ImageDimension * tcfg.ImageDimension; i++) {
-                int result = ((TartGene)get(0)).evaluate(tcfg, this);
+                int x = i % tcfg.ImageDimension;
+                int y = i / tcfg.ImageDimension;
+                int north = 0;
+                int northIndex = i - tcfg.ImageDimension;
+                if(northIndex >= 0) north = tcfg.dozerGrid.colors.get(northIndex);
+                int west = 0;
+                int westIndex = i - 1;
+                if((westIndex + 1) % tcfg.ImageDimension != 0 & westIndex >= 0) west = tcfg.dozerGrid.colors.get(westIndex);
+                int northWest = 0;
+                int northWestIndex = northIndex - 1;
+                if((northWestIndex + 1) % tcfg.ImageDimension != 0 && northWestIndex >= 0) northWest = tcfg.dozerGrid.colors.get(northWestIndex);
+                PixelInfo pixelInfo = new PixelInfo(x, y, north, west, northWest);
+                int result = ((TartGene)get(0)).evaluate(tcfg, this, pixelInfo);
                 tcfg.dozerGrid.colorPixel(Math.abs(result) % Grid.numColors, out);
             }
             curGridFit = tcfg.dozerGrid.calcFitness();
@@ -147,7 +171,19 @@ public class TartGP extends GP {
             //evaluate main tree for max steps of the dozer (given in .ini file)
 	        // writing grid after each move
             for (int i=0; i<tcfg.ImageDimension * tcfg.ImageDimension; i++) {
-                int result = ((TartGene)get(0)).evaluate(tcfg, this);
+                int x = i % tcfg.ImageDimension;
+                int y = i / tcfg.ImageDimension;
+                int north = 0;
+                int northIndex = i - tcfg.ImageDimension;
+                if(northIndex >= 0) north = tcfg.dozerGrid.colors.get(northIndex);
+                int west = 0;
+                int westIndex = i - 1;
+                if((westIndex + 1) % tcfg.ImageDimension != 0 & westIndex >= 0) west = tcfg.dozerGrid.colors.get(westIndex);
+                int northWest = 0;
+                int northWestIndex = northIndex - 1;
+                if((northWestIndex + 1) % tcfg.ImageDimension != 0 && northWestIndex >= 0) northWest = tcfg.dozerGrid.colors.get(northWestIndex);
+                PixelInfo pixelInfo = new PixelInfo(x, y, north, west, northWest);
+                int result = ((TartGene)get(0)).evaluate(tcfg, this, pixelInfo);
                 tcfg.dozerGrid.colorPixel(Math.abs(result) % Grid.numColors, out);
             }
             curGridFit = tcfg.dozerGrid.calcFitness();

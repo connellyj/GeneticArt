@@ -18,6 +18,8 @@ package Tartarus1;
 
 import gpjpp.*;
 
+import java.util.Random;
+
 //extend GPGene to evaluate Tartarus
 public class TartGene extends GPGene {
 
@@ -40,32 +42,42 @@ public class TartGene extends GPGene {
     public GPGene createChild(GPNode gpo) { return new TartGene(gpo); }
 
     //called by TartGP.evaluate() for main branch of each GP
-    int evaluate(TartVariables cfg, TartGP gp) {
+    int evaluate(TartVariables cfg, TartGP gp, PixelInfo pixelInfo) {
 
         int arg1, arg2, arg3, result;
         switch (node.value()) {
-            
-        case Grid.ZERO:
-            return 0;
-            
-        case Grid.ONE: 
-            return 1;
-            
-        case Grid.TWO: 
-            return 2;
 
         case Grid.INC:
-            return ( ( (TartGene)get(0) ).evaluate(cfg, gp) + 1) % 3;
+            return ( ( (TartGene)get(0) ).evaluate(cfg, gp, pixelInfo) + 1) % 3;
 
         case Grid.ADD:
-            result = ( (TartGene)get(0) ).evaluate(cfg, gp) + ( (TartGene)get(1) ).evaluate(cfg, gp);
+            result = ( (TartGene)get(0) ).evaluate(cfg, gp, pixelInfo) + ( (TartGene)get(1) ).evaluate(cfg, gp, pixelInfo);
             return result;
 
         case Grid.MAX:
-            arg1 = ( (TartGene)get(0) ).evaluate(cfg, gp);
-            arg2 = ( (TartGene)get(1) ).evaluate(cfg, gp);
+            arg1 = ( (TartGene)get(0) ).evaluate(cfg, gp, pixelInfo);
+            arg2 = ( (TartGene)get(1) ).evaluate(cfg, gp, pixelInfo);
             if (arg1 > arg2) return arg1;
             else return arg2;
+
+        case Grid.X:
+            return pixelInfo.xCoord;
+
+        case Grid.Y:
+            return pixelInfo.yCoord;
+
+        case Grid.NORTH:
+            return pixelInfo.northColor;
+
+        case Grid.WEST:
+            return pixelInfo.westColor;
+
+        case Grid.NORTH_WEST:
+            return pixelInfo.northWestColor;
+
+        case Grid.RANDOM:
+            Random r = new Random();
+            return r.nextInt(Grid.numColors);
 
         default:
             throw new RuntimeException("Undefined function type "+node.value());

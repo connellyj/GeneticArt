@@ -8,16 +8,20 @@ import java.io.*;
 
 public class Grid {
 
-    private ArrayList<Integer> colors;
+    public ArrayList<Integer> colors;
     private int imageDimension;
 
     //functions and terminals
-    public final static int ZERO = 0;
-    public final static int ONE = 1; 
-    public final static int TWO = 2;
-    public final static int INC = 3;
-    public final static int ADD = 4;
-    public final static int MAX = 5;
+    public final static int INC = 0;
+    public final static int ADD = 1;
+    public final static int MAX = 2;
+    public final static int X = 3;
+    public static final int Y = 4;
+    public static final int NORTH = 5;
+    public static final int WEST = 6;
+    public static final int NORTH_WEST = 7;
+    public static final int RANDOM = 8;
+
 
     public enum DiscreteColor {
         RED, ORANGE, YELLOW, LIME, GREEN, SEA_GREEN, LIGHT_BLUE, MEDIUM_BLUE, BLUE, PURPLE, MAGENTA, PINK
@@ -43,28 +47,34 @@ public class Grid {
     // determine the fitness of the current state of the grid. fitness is (maxScore+1) - score
     // where score is the number of sides of blocks that are touching a wall
     public int calcFitness() {
-        BufferedWriter out;
-        try {
-            Path path = Paths.get("evaluate.txt");
-            Files.deleteIfExists(path);
-        } catch (IOException e) {
-            System.out.println("Error deleting evaluate.txt");
-            e.printStackTrace();
-        }
-        try{
-            //sets it to append mode
-            out = new BufferedWriter(new FileWriter("evaluate.txt", true));
-            for(int color : colors) out.write(color + " ");
-            out.flush();
-            out.close();
-        }catch(IOException exception){
-            System.out.println("Error writing to file");
-        }
-        return getFitnessFromUser();
-//        int fitness = imageDimension * imageDimension * numColors;
-//        double mean = 0.0;
-//        for(Integer color : colors) mean += color;
-//        return (int)Math.floor(fitness - mean);
+//        int fitness = 0;
+//        for(int x = 0; x < imageDimension; x++) {
+//            for(int y = 0; y < imageDimension; y++) {
+//                int ndif =
+//            }
+//        }
+//        BufferedWriter out;
+//        try {
+//            Path path = Paths.get("evaluate.txt");
+//            Files.deleteIfExists(path);
+//        } catch (IOException e) {
+//            System.out.println("Error deleting evaluate.txt");
+//            e.printStackTrace();
+//        }
+//        try{
+//            //sets it to append mode
+//            out = new BufferedWriter(new FileWriter("evaluate.txt", true));
+//            for(int color : colors) out.write(color + " ");
+//            out.flush();
+//            out.close();
+//        }catch(IOException exception){
+//            System.out.println("Error writing to file");
+//        }
+//        return getFitnessFromUser();
+        int fitness = imageDimension * imageDimension * numColors;
+        double mean = 0.0;
+        for(Integer color : colors) mean += color;
+        return (int)Math.floor(fitness - mean);
     }
 
     private int getFitnessFromUser() {
@@ -80,6 +90,19 @@ public class Grid {
         if(fitness < 1 || fitness > 10) {
             System.out.println("That's not between 1 and 10... Try again");
             return getFitnessFromUser();
+        }
+        ProcessBuilder pb = new ProcessBuilder("java", "Test");
+        Map<String, String> env = pb.environment();
+        //pb.directory(new File("myDir"));
+        File log = new File("log");
+        pb.redirectErrorStream(true);
+        pb.redirectOutput(ProcessBuilder.Redirect.appendTo(log));
+        Process p = null;
+        try {
+            p = pb.start();
+        } catch (IOException e) {
+            System.out.println("Error starting process");
+            e.printStackTrace();
         }
         return fitness;
     }
