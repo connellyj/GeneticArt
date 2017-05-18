@@ -69,7 +69,7 @@ class Tartarus extends GPRun {
     Tartarus(String baseName) { super(baseName, true); }
 
     //main application function
-    public static void startGA() {
+    public static void main(String args[]) {
 
         String baseName = "tartarus";
 

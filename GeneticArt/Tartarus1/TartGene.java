@@ -48,7 +48,7 @@ public class TartGene extends GPGene {
         switch (node.value()) {
 
         case Grid.INC:
-            return ( ( (TartGene)get(0) ).evaluate(cfg, gp, pixelInfo) + 1) % 3;
+            return ( ( (TartGene)get(0) ).evaluate(cfg, gp, pixelInfo) + 1);
         
         case Grid.ABS:
             return Math.abs(((TartGene)get(0)).evaluate(cfg, gp, pixelInfo));

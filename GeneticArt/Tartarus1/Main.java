@@ -21,7 +21,9 @@ public class Main extends Application {
         Task task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                Tartarus.startGA();
+                String[] args = new String[1];
+                args[0] = "tartarus";
+                Tartarus.main(args);
                 return null;
             }
         };

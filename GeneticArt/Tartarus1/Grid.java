@@ -59,7 +59,6 @@ public class Grid {
 
     public void colorPixel(int color, BufferedWriter out) {
         colors.add(color);
-        //System.out.println(color);
         if(out != null) updateFile(out, color);
     }
 
@@ -79,24 +78,39 @@ public class Grid {
 //            Main.rootPane.getChildren().add(imageView);
 //        });
 //        return getFitnessFromUser();
-        int fitness = 0;
+//        int fitness = 0;
+//        Random r = new Random();
+//        for(int i = 1; i < imageDimension * imageDimension; i++) {
+//            if(colors.get(i) == r.nextInt(numColors)) fitness += 1;
+//        }
+//        return fitness;
+        int fitness = imageDimension * imageDimension;
+        //double mean = 0.0;
         for(int i = 0; i < imageDimension * imageDimension; i++) {
-//            int north = 0;
-//            int northIndex = i - imageDimension;
-//            if(northIndex > 0) north = colors.get(northIndex);
-//            int west = 0;
-//            int westIndex = i - 1;
-//            if((westIndex + 1) % imageDimension != 0 && westIndex > 0) west = colors.get(westIndex);
-//            int northWest = 0;
-//            int northWestIndex = northIndex - 1;
-//            if((northWestIndex + 1) % imageDimension != 0 && northWestIndex > 0) northWest = colors.get(northWestIndex);
-//            int cur = colors.get(i);
-//            int ndif = Math.abs(north - cur);
-//            int wdif = Math.abs(west - cur);
-//            int nwdif = Math.abs(northWest - cur);
-//            if(ndif < 1 || ndif >= 4 || wdif < 1 || wdif >= 4 || nwdif < 1 || nwdif >= 4) fitness += 1;
-            fitness += colors.get(i);
+            int north = 0;
+            int northIndex = i - imageDimension;
+            if(northIndex > 0) north = colors.get(northIndex);
+            int west = 0;
+            int westIndex = i - 1;
+            if((westIndex + 1) % imageDimension != 0 && westIndex > 0) west = colors.get(westIndex);
+            int northWest = 0;
+            int northWestIndex = northIndex - 1;
+            if((northWestIndex + 1) % imageDimension != 0 && northWestIndex > 0) northWest = colors.get(northWestIndex);
+            int cur = colors.get(i);
+            int ndif = Math.abs(north - cur);
+            int wdif = Math.abs(west - cur);
+            int nwdif = Math.abs(northWest - cur);
+            if(ndif >= 1 && ndif < 4 && wdif >= 1 && wdif < 4 && nwdif >= 1 && nwdif < 4 && cur > 4) fitness -= 1;
+            //mean += colors.get(i);
         }
+//        if(mean != 0.0) mean /= (imageDimension * imageDimension);
+//        double stdev = 0;
+//        for(int i = 0; i < imageDimension * imageDimension; i++) {
+//            stdev += Math.pow(colors.get(i) - mean, 2.0);
+//        }
+//        stdev /= numColors;
+//        stdev = Math.sqrt(stdev);
+//        if(stdev > 0.5) fitness += 3000;
         return fitness;
     }
 
