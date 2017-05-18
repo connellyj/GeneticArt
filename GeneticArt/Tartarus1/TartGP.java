@@ -18,6 +18,10 @@ package Tartarus1;// gpjpp example program
 
 import java.io.*;
 import gpjpp.*;
+import javafx.application.Platform;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 
 //extend GP for lawn mowing
 //class must be public for stream loading; otherwise non-public ok
@@ -186,6 +190,18 @@ public class TartGP extends GP {
                 int result = ((TartGene)get(0)).evaluate(tcfg, this, pixelInfo);
                 tcfg.dozerGrid.colorPixel(Math.abs(result) % Grid.numColors, out);
             }
+            Platform.runLater(() -> {
+                WritableImage image = new WritableImage(tcfg.ImageDimension, tcfg.ImageDimension);
+                PixelWriter p = image.getPixelWriter();
+                for(int x = 0; x < tcfg.ImageDimension; x++) {
+                    for(int y = 0; y < tcfg.ImageDimension; y++) {
+                        p.setColor(x, y, tcfg.dozerGrid.discreteColors.get(tcfg.dozerGrid.colors.get(x * y + x)));
+                    }
+                }
+                ImageView imageView = new ImageView(image);
+                Main.rootPane.getChildren().clear();
+                Main.rootPane.getChildren().add(imageView);
+            });
             curGridFit = tcfg.dozerGrid.calcFitness();
             tcfg.dozerGrid.outputFitness(out, curGridFit);
             totFit += curGridFit;

@@ -1,24 +1,17 @@
 package Tartarus1;
 
-import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
-
-import java.awt.image.BufferedImage;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
 import java.util.*;
 import java.io.*;
 
 public class Grid {
 
     public ArrayList<Integer> colors;
+    public ArrayList<Color> discreteColors;
     private int imageDimension;
 
     //functions and terminals
@@ -45,6 +38,19 @@ public class Grid {
     public Grid(int imageDimension) {
         this.imageDimension = imageDimension;
         colors = new ArrayList<>();
+        discreteColors = new ArrayList<>();
+        discreteColors.add(Color.rgb(255, 0, 0));
+        discreteColors.add(Color.rgb(255, 127, 0));
+        discreteColors.add(Color.rgb(255, 255, 0));
+        discreteColors.add(Color.rgb(127, 255, 0));
+        discreteColors.add(Color.rgb(0, 255, 0));
+        discreteColors.add(Color.rgb(0, 255, 127));
+        discreteColors.add(Color.rgb(0, 255, 255));
+        discreteColors.add(Color.rgb(0, 127, 255));
+        discreteColors.add(Color.rgb(0, 0, 255));
+        discreteColors.add(Color.rgb(127, 0, 255));
+        discreteColors.add(Color.rgb(255, 0, 255));
+        discreteColors.add(Color.rgb(255, 0, 127));
     }
 
     public void colorPixel(int color) {
@@ -60,34 +66,38 @@ public class Grid {
     // determine the fitness of the current state of the grid. fitness is (maxScore+1) - score
     // where score is the number of sides of blocks that are touching a wall
     public int calcFitness() {
-        BufferedWriter out;
-        try {
-            Path path = Paths.get("evaluate.txt");
-            Files.deleteIfExists(path);
-        } catch (IOException e) {
-            System.out.println("Error deleting evaluate.txt");
-            e.printStackTrace();
+//        Platform.runLater(() -> {
+//            WritableImage image = new WritableImage(imageDimension, imageDimension);
+//            PixelWriter p = image.getPixelWriter();
+//            for(int x = 0; x < imageDimension; x++) {
+//                for(int y = 0; y < imageDimension; y++) {
+//                    p.setColor(x, y, discreteColors.get(colors.get(x * y + x)));
+//                }
+//            }
+//            ImageView imageView = new ImageView(image);
+//            Main.rootPane.getChildren().clear();
+//            Main.rootPane.getChildren().add(imageView);
+//        });
+//        return getFitnessFromUser();
+        int fitness = 0;
+        for(int i = 0; i < imageDimension * imageDimension; i++) {
+//            int north = 0;
+//            int northIndex = i - imageDimension;
+//            if(northIndex > 0) north = colors.get(northIndex);
+//            int west = 0;
+//            int westIndex = i - 1;
+//            if((westIndex + 1) % imageDimension != 0 && westIndex > 0) west = colors.get(westIndex);
+//            int northWest = 0;
+//            int northWestIndex = northIndex - 1;
+//            if((northWestIndex + 1) % imageDimension != 0 && northWestIndex > 0) northWest = colors.get(northWestIndex);
+//            int cur = colors.get(i);
+//            int ndif = Math.abs(north - cur);
+//            int wdif = Math.abs(west - cur);
+//            int nwdif = Math.abs(northWest - cur);
+//            if(ndif < 1 || ndif >= 4 || wdif < 1 || wdif >= 4 || nwdif < 1 || nwdif >= 4) fitness += 1;
+            fitness += colors.get(i);
         }
-        try{
-            //sets it to append mode
-            out = new BufferedWriter(new FileWriter("evaluate.txt", true));
-            for(int color : colors) out.write(color + " ");
-            out.flush();
-            out.close();
-        }catch(IOException exception){
-            System.out.println("Error writing to evaluate.txt");
-        }
-        BufferedImage canvas = new BufferedImage(imageDimension, imageDimension, BufferedImage.TYPE_INT_RGB);
-        for(int x = 0; x < imageDimension; x++) {
-            for(int y = 0; y < imageDimension; y++) {
-                canvas.setRGB(x, y, 5);
-            }
-        }
-        Image image = SwingFXUtils.toFXImage(canvas, null);
-        ImageView imageView = new ImageView(image);
-        Main.stackPane = new StackPane();
-        Main.stackPane.getChildren().add(imageView);
-        return getFitnessFromUser();
+        return fitness;
     }
 
     private int getFitnessFromUser() {

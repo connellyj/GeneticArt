@@ -1,5 +1,5 @@
 PopulationSize            = 50
-NumberOfGenerations       = 100
+NumberOfGenerations       = 8
 CrossoverProbability      = 50.0
 CreationProbability       = 0.0
 CreationType              = Grow
@@ -27,10 +27,33 @@ TestDiversity             = false
 ComplexityAffectsFitness  = false
 CheckpointGens            = 10
 TestCheckpoint            = true
-NumTestImages             = 10
-ImageDimension            = 12
+NumTestImages             = 1
+ImageDimension            = 512
 
-RPB:  inc(1) add(2) max(2) rand NW W N y x
+RPB:  inc(1) abs(1) add(2) max(2) avg2(2) avg3(3) if(3) rand NW W N y x
 
 
 Run number 1 (good runs 0)
+Too complex 1013
+
+ Gen|              Fitness           |   Complexity    |    Depth   
+    |      Best    Average      Worst|   B      A     W|  B    A   W
+   0| 235150.00  894437.02 1455496.00| 106  113.0   174|  9  7.7   7  
+   1| 234518.00  408874.38 1452905.00| 106   86.8    29|  9  8.1   7  
+   2| 231362.00  252481.96  303800.00|  55   82.6     9|  9  8.6   5  
+   3| 211947.00  254352.30  782336.00|  22   88.7     4|  8  8.9   2  
+   4| 211947.00  261648.26 1471015.00|  22  101.9     5|  8  9.9   3  
+   5| 211899.00  231733.52  266363.00|  22  103.0    98|  8 10.9   9  
+   6|      0.00  224481.16  320133.00|   5   85.7   199|  5 10.5  13  
+   7|      0.00  209582.68  303971.00|   5   65.6     6|  5 10.0   5  
+   8|      0.00  214822.36 1212120.00|   5   49.3     7|  5  9.0   3  
+
+========================================================================
+Generation:8 best:3 worst:10
+  GP#           dad           mum oper mut shrk mut    fitness  len  dep
+===== ============= ============= ======== ======== ========== ==== ====
+B   3            46                                       0.00    5    5
+
+FINAL FITNESS = 0.0
+Run time 109.00 seconds, 11.06 seconds/generation
+
