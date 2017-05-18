@@ -37,13 +37,12 @@ double colorList[12][3] = {{1.0, 0.0, 0.0},
                            {1.0, 0.0, 0.5}};
 
 void getColor(double index, double blankColor[3]) {
-    printf("%f\n", index);
     for (int i = 0; i < 3; i++) {
         blankColor[i] = colorList[(int)index][i];
     }
 }
 
-void drawImage(FILE *file) {
+void drawImage() {
     double color[3];
     char chr = fgetc(file);
     char num[30];
@@ -53,10 +52,9 @@ void drawImage(FILE *file) {
     
     for (int y = 0; y < 12; y++) {
         for (int x = 0; x < 12; x++) {
-            printf("chr: %c\n", chr);
-            fflush(stdout);
+            
             while (chr == ' ' || chr == '\n') {
-                chr = fgetc(file);
+                chr = fgetc(stdin);
             }
 
             int i = 0;
@@ -90,16 +88,8 @@ int main() {
 		pixClearRGB(0.0, 0.0, 0.0);
     }
 
-    // Sets up the file
-    FILE *file;
-    if ((file = fopen("output.txt", "r")) == NULL) {
-        printf("No such file\n");
-        exit(1);
-    }  
-
-    drawImage(file);
+    drawImage();
     pixSetRGB(5, 5, 1, 1, 1);
-    fclose(file);
 
     pixRun();
     return 0;
