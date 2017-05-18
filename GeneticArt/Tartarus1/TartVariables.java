@@ -26,6 +26,7 @@ public class TartVariables extends GPVariables {
 
     int ImageDimension = 10;
     int NumTestImages = 10;
+    int EvalType = 1;
 
     // simulation grid, not read from file but created during run
     // included here for easy access in any class/function
@@ -48,6 +49,7 @@ public class TartVariables extends GPVariables {
         super.load(props);
         NumTestImages = getInt(props, "NumTestImages", NumTestImages);
         ImageDimension = getInt(props, "ImageDimension", ImageDimension);
+        EvalType = getInt(props, "EvalType", ImageDimension);
     }
 
     //get values from a stream
@@ -57,6 +59,7 @@ public class TartVariables extends GPVariables {
         super.load(is);
         NumTestImages = is.readInt();
         ImageDimension = is.readInt();
+        EvalType = is.readInt();
     }
 
     //save values to a stream
@@ -64,6 +67,7 @@ public class TartVariables extends GPVariables {
         super.save(os);
         os.writeInt(NumTestImages);
         os.writeInt(ImageDimension);
+        os.writeInt(EvalType);
     }
 
     //write values to a text file
@@ -71,5 +75,6 @@ public class TartVariables extends GPVariables {
         super.printOn(os, cfg);
         os.println("NumTestImages             = "+NumTestImages);
         os.println("ImageDimension            = "+ImageDimension);
+        os.println("EvalType                  = "+EvalType);
     }
 }

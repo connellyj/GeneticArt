@@ -33,6 +33,10 @@ public class Grid {
         RED, ORANGE, YELLOW, LIME, GREEN, SEA_GREEN, LIGHT_BLUE, MEDIUM_BLUE, BLUE, PURPLE, MAGENTA, PINK
     }
 
+    public enum EvalTypes {
+        HUMAN, GRADIENT, STDEV, RAINBOW, SQUARES, X, INVERSE_X
+    }
+
     public static final int numColors = DiscreteColor.values().length;
 
     public Grid(int imageDimension) {
@@ -62,30 +66,24 @@ public class Grid {
         if(out != null) updateFile(out, color);
     }
 
-    // determine the fitness of the current state of the grid. fitness is (maxScore+1) - score
-    // where score is the number of sides of blocks that are touching a wall
-    public int calcFitness() {
-//        Platform.runLater(() -> {
-//            WritableImage image = new WritableImage(imageDimension, imageDimension);
-//            PixelWriter p = image.getPixelWriter();
-//            for(int x = 0; x < imageDimension; x++) {
-//                for(int y = 0; y < imageDimension; y++) {
-//                    p.setColor(x, y, discreteColors.get(colors.get(x * y + x)));
-//                }
-//            }
-//            ImageView imageView = new ImageView(image);
-//            Main.rootPane.getChildren().clear();
-//            Main.rootPane.getChildren().add(imageView);
-//        });
-//        return getFitnessFromUser();
-//        int fitness = 0;
-//        Random r = new Random();
-//        for(int i = 1; i < imageDimension * imageDimension; i++) {
-//            if(colors.get(i) == r.nextInt(numColors)) fitness += 1;
-//        }
-//        return fitness;
+    private int humanEval() {
+        Platform.runLater(() -> {
+            WritableImage image = new WritableImage(imageDimension, imageDimension);
+            PixelWriter p = image.getPixelWriter();
+            for(int x = 0; x < imageDimension; x++) {
+                for(int y = 0; y < imageDimension; y++) {
+                    p.setColor(x, y, discreteColors.get(colors.get(x * y + x)));
+                }
+            }
+            ImageView imageView = new ImageView(image);
+            Main.rootPane.getChildren().clear();
+            Main.rootPane.getChildren().add(imageView);
+        });
+        return getFitnessFromUser();
+    }
+
+    private int gradientEval() {
         int fitness = imageDimension * imageDimension;
-        //double mean = 0.0;
         for(int i = 0; i < imageDimension * imageDimension; i++) {
             int north = 0;
             int northIndex = i - imageDimension;
@@ -101,17 +99,77 @@ public class Grid {
             int wdif = Math.abs(west - cur);
             int nwdif = Math.abs(northWest - cur);
             if(ndif >= 1 && ndif < 4 && wdif >= 1 && wdif < 4 && nwdif >= 1 && nwdif < 4 && cur > 4) fitness -= 1;
-            //mean += colors.get(i);
         }
-//        if(mean != 0.0) mean /= (imageDimension * imageDimension);
-//        double stdev = 0;
-//        for(int i = 0; i < imageDimension * imageDimension; i++) {
-//            stdev += Math.pow(colors.get(i) - mean, 2.0);
-//        }
-//        stdev /= numColors;
-//        stdev = Math.sqrt(stdev);
-//        if(stdev > 0.5) fitness += 3000;
         return fitness;
+    }
+
+    private int stdevEval() {
+        double mean = 0.0;
+        for(int i = 0; i < imageDimension * imageDimension; i++) {
+            mean += colors.get(i);
+        }
+        if(mean != 0.0) mean /= (imageDimension * imageDimension);
+        double stdev = 0;
+        for(int i = 0; i < imageDimension * imageDimension; i++) {
+            stdev += Math.pow(colors.get(i) - mean, 2.0);
+        }
+        stdev /= numColors;
+        stdev = Math.sqrt(stdev);
+        return 100 - (int)Math.floor(stdev);
+    }
+
+    private int rainbowEval() {
+        int fitness = imageDimension * imageDimension;
+        for(int i = 0; i < imageDimension * imageDimension; i++) {
+            if(colors.get(i) == i / imageDimension) fitness--;
+        }
+        return fitness;
+    }
+
+    private int squareEval() {
+        int fitness = imageDimension * imageDimension;
+        for(int i = 2; i < imageDimension * imageDimension; i++) {
+            if(colors.get(i) == colors.get(i - 2) && colors.get(i) != colors.get(i - 1)) fitness--;
+        }
+        return fitness;
+    }
+
+    private int xEVal() {
+        int fitness = imageDimension * imageDimension;
+        for(int i = 0; i < imageDimension * imageDimension; i++) {
+            if(colors.get(i) == (i % imageDimension) % numColors) fitness--;
+        }
+        return fitness;
+    }
+
+    private int inverseXEval() {
+        int fitness = imageDimension * imageDimension;
+        for(int i = 1; i < imageDimension * imageDimension; i++) {
+            if(colors.get(i) < colors.get(i - 1)) fitness--;
+        }
+        return fitness;
+    }
+
+    // determine the fitness of the current state of the grid. fitness is (maxScore+1) - score
+    // where score is the number of sides of blocks that are touching a wall
+    public int calcFitness(EvalTypes evalType) {
+        switch (evalType) {
+            case HUMAN:
+                return humanEval();
+            case GRADIENT:
+                return gradientEval();
+            case STDEV:
+                return stdevEval();
+            case RAINBOW:
+                return rainbowEval();
+            case SQUARES:
+                return squareEval();
+            case X:
+                return xEVal();
+            case INVERSE_X:
+                return inverseXEval();
+        }
+        return 0;
     }
 
     private int getFitnessFromUser() {

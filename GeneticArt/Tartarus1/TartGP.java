@@ -16,12 +16,16 @@ package Tartarus1;// gpjpp example program
 //
 // Send comments, suggestions, problems to kimk@turbopower.com
 
+import java.awt.image.BufferedImage;
 import java.io.*;
 import gpjpp.*;
 import javafx.application.Platform;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
+
+import javax.imageio.ImageIO;
 
 //extend GP for lawn mowing
 //class must be public for stream loading; otherwise non-public ok
@@ -60,7 +64,7 @@ public class TartGP extends GP {
             // evaluate main tree for 80 steps of the dozer
             // Maybe I should use a grid thing but with color
             evaluateImage(tcfg, null);
-            totFit += tcfg.dozerGrid.calcFitness();
+            totFit += tcfg.dozerGrid.calcFitness(Grid.EvalTypes.values()[tcfg.EvalType]);
         }
         totFit = totFit/tcfg.NumTestImages;
         if (cfg.ComplexityAffectsFitness)
@@ -110,7 +114,7 @@ public class TartGP extends GP {
 
             //evaluate main tree for 80 steps of the dozer, printing grid after each move
             evaluateImage(tcfg, out);
-            curGridFit = tcfg.dozerGrid.calcFitness();
+            curGridFit = tcfg.dozerGrid.calcFitness(Grid.EvalTypes.values()[tcfg.EvalType]);
             tcfg.dozerGrid.outputFitness(out, curGridFit);
         }
         try{
@@ -159,8 +163,18 @@ public class TartGP extends GP {
                 imageView.setSmooth(false);
                 Main.rootPane.getChildren().clear();
                 Main.rootPane.getChildren().add(imageView);
+
+                File outputFile = new File("genetic-art.png");
+                BufferedImage bImage = SwingFXUtils.fromFXImage(image, null);
+                try {
+                    ImageIO.write(bImage, "png", outputFile);
+                } catch (IOException e) {
+                    System.out.println("Error saving image");
+                    e.printStackTrace();
+                }
+
             });
-            curGridFit = tcfg.dozerGrid.calcFitness();
+            curGridFit = tcfg.dozerGrid.calcFitness(Grid.EvalTypes.values()[tcfg.EvalType]);
             tcfg.dozerGrid.outputFitness(out, curGridFit);
             totFit += curGridFit;
         }
