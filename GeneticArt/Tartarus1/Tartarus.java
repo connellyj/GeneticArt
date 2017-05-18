@@ -39,8 +39,12 @@ class Tartarus extends GPRun {
 
         //MAIN TREE
         ns0.putNode(new GPNode(Grid.INC, "inc", 1));
+        ns0.putNode(new GPNode(Grid.ABS, "abs", 1));
         ns0.putNode(new GPNode(Grid.ADD, "add", 2));
         ns0.putNode(new GPNode(Grid.MAX, "max", 2));
+        ns0.putNode(new GPNode(Grid.AVG2, "avg2", 2));
+        ns0.putNode(new GPNode(Grid.AVG3, "avg3", 3));
+        ns0.putNode(new GPNode(Grid.IF, "if", 3));
         ns0.putNode(new GPNode(Grid.X, "x"));
         ns0.putNode(new GPNode(Grid.Y, "y"));
         ns0.putNode(new GPNode(Grid.NORTH, "N"));

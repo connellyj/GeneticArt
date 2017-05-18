@@ -12,15 +12,19 @@ public class Grid {
     private int imageDimension;
 
     //functions and terminals
-    public final static int INC = 0;
-    public final static int ADD = 1;
-    public final static int MAX = 2;
-    public final static int X = 3;
-    public static final int Y = 4;
-    public static final int NORTH = 5;
-    public static final int WEST = 6;
-    public static final int NORTH_WEST = 7;
-    public static final int RANDOM = 8;
+    public static final int INC = 0;
+    public static final int ABS = 1;
+    public static final int ADD = 2;
+    public static final int MAX = 3;
+    public static final int AVG2 = 4;
+    public static final int AVG3 = 5;
+    public static final int IF = 6;
+    public static final int X = 7;
+    public static final int Y = 8;
+    public static final int NORTH = 9;
+    public static final int WEST = 10;
+    public static final int NORTH_WEST = 11;
+    public static final int RANDOM = 12;
 
 
     public enum DiscreteColor {
