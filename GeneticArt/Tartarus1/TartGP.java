@@ -154,7 +154,7 @@ public class TartGP extends GP {
                 PixelWriter p = image.getPixelWriter();
                 for(int x = 0; x < tcfg.ImageDimension; x++) {
                     for(int y = 0; y < tcfg.ImageDimension; y++) {
-                        p.setColor(x, y, tcfg.dozerGrid.discreteColors.get(tcfg.dozerGrid.colors.get(x * y + x)));
+                        p.setColor(x, y, tcfg.dozerGrid.discreteColors.get(tcfg.dozerGrid.colors.get(tcfg.ImageDimension * y + x)));
                     }
                 }
                 ImageView imageView = new ImageView(image);
@@ -164,14 +164,14 @@ public class TartGP extends GP {
                 Main.rootPane.getChildren().clear();
                 Main.rootPane.getChildren().add(imageView);
 
-                File outputFile = new File("genetic-art.png");
-                BufferedImage bImage = SwingFXUtils.fromFXImage(image, null);
-                try {
-                    ImageIO.write(bImage, "png", outputFile);
-                } catch (IOException e) {
-                    System.out.println("Error saving image");
-                    e.printStackTrace();
-                }
+//                File outputFile = new File("genetic-art.png");
+//                BufferedImage bImage = SwingFXUtils.fromFXImage(image, null);
+//                try {
+//                    ImageIO.write(bImage, "png", outputFile);
+//                } catch (IOException e) {
+//                    System.out.println("Error saving image");
+//                    e.printStackTrace();
+//                }
 
             });
             curGridFit = tcfg.dozerGrid.calcFitness(Grid.EvalTypes.values()[tcfg.EvalType]);
