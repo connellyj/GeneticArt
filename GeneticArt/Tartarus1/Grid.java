@@ -28,6 +28,18 @@ public class Grid {
     public static final int WEST = 10;
     public static final int NORTH_WEST = 11;
     public static final int RANDOM = 12;
+    public static final int ZERO = 13;
+    public static final int ONE = 14;
+    public static final int TWO = 15;
+    public static final int THREE = 16;
+    public static final int FOUR = 17;
+    public static final int FIVE = 18;
+    public static final int SIX = 19;
+    public static final int SEVEN = 20;
+    public static final int EIGHT = 21;
+    public static final int NINE = 22;
+    public static final int TEN = 23;
+    public static final int ELEVEN = 24;
 
     public enum DiscreteColor {
         RED, ORANGE, YELLOW, LIME, GREEN, SEA_GREEN, LIGHT_BLUE, MEDIUM_BLUE, BLUE, PURPLE, MAGENTA, PINK
@@ -72,7 +84,7 @@ public class Grid {
             PixelWriter p = image.getPixelWriter();
             for(int x = 0; x < imageDimension; x++) {
                 for(int y = 0; y < imageDimension; y++) {
-                    p.setColor(x, y, discreteColors.get(colors.get(x * y + x)));
+                    p.setColor(x, y, discreteColors.get(colors.get(imageDimension * y + x)));
                 }
             }
             ImageView imageView = new ImageView(image);
@@ -98,7 +110,7 @@ public class Grid {
             int ndif = Math.abs(north - cur);
             int wdif = Math.abs(west - cur);
             int nwdif = Math.abs(northWest - cur);
-            if(ndif >= 1 && ndif < 4 && wdif >= 1 && wdif < 4 && nwdif >= 1 && nwdif < 4 && cur > 4) fitness -= 1;
+            if(ndif >= 1 && ndif < 4 && wdif >= 1 && wdif < 4 && nwdif >= 1 && nwdif < 4) fitness -= 1;
         }
         return fitness;
     }

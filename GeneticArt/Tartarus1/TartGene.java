@@ -104,6 +104,42 @@ public class TartGene extends GPGene {
             Random r = new Random();
             return r.nextInt(Grid.numColors);
 
+        case Grid.ZERO:
+            return 0;
+
+        case Grid.ONE:
+            return 1;
+
+        case Grid.TWO:
+            return 2;
+
+        case Grid.THREE:
+            return 3;
+
+        case Grid.FOUR:
+            return 4;
+
+        case Grid.FIVE:
+            return 5;
+
+        case Grid.SIX:
+            return 6;
+
+        case Grid.SEVEN:
+            return 7;
+
+        case Grid.EIGHT:
+            return 8;
+
+        case Grid.NINE:
+            return 9;
+
+        case Grid.TEN:
+            return 10;
+
+        case Grid.ELEVEN:
+            return 11;
+
         default:
             throw new RuntimeException("Undefined function type "+node.value());
         }

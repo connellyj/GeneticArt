@@ -35,7 +35,7 @@ class Tartarus extends GPRun {
     //  initialized set of functions & terminals
     protected GPAdfNodeSet createNodeSet(GPVariables cfg) {
  
-        GPNodeSet ns0 = new GPNodeSet(13);
+        GPNodeSet ns0 = new GPNodeSet(25);
 
         //MAIN TREE
         ns0.putNode(new GPNode(Grid.INC, "inc", 1));
@@ -51,6 +51,18 @@ class Tartarus extends GPRun {
         ns0.putNode(new GPNode(Grid.WEST, "W"));
         ns0.putNode(new GPNode(Grid.NORTH_WEST, "NW"));
         ns0.putNode(new GPNode(Grid.RANDOM, "rand"));
+        ns0.putNode(new GPNode(Grid.ZERO, "0"));
+        ns0.putNode(new GPNode(Grid.ONE, "1"));
+        ns0.putNode(new GPNode(Grid.TWO, "2"));
+        ns0.putNode(new GPNode(Grid.THREE, "3"));
+        ns0.putNode(new GPNode(Grid.FOUR, "4"));
+        ns0.putNode(new GPNode(Grid.FIVE, "5"));
+        ns0.putNode(new GPNode(Grid.SIX, "6"));
+        ns0.putNode(new GPNode(Grid.SEVEN, "7"));
+        ns0.putNode(new GPNode(Grid.EIGHT, "8"));
+        ns0.putNode(new GPNode(Grid.NINE, "9"));
+        ns0.putNode(new GPNode(Grid.TEN, "10"));
+        ns0.putNode(new GPNode(Grid.ELEVEN, "11"));
 
 	// ADF - Do NOT change
 	GPAdfNodeSet adfNs = new GPAdfNodeSet(1);
