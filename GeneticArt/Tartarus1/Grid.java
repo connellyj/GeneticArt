@@ -18,35 +18,38 @@ public class Grid {
     public static final int INC = 0;
     public static final int ABS = 1;
     public static final int ADD = 2;
-    public static final int MAX = 3;
-    public static final int AVG2 = 4;
-    public static final int AVG3 = 5;
-    public static final int IF = 6;
-    public static final int X = 7;
-    public static final int Y = 8;
-    public static final int NORTH = 9;
-    public static final int WEST = 10;
-    public static final int NORTH_WEST = 11;
-    public static final int RANDOM = 12;
-    public static final int ZERO = 13;
-    public static final int ONE = 14;
-    public static final int TWO = 15;
-    public static final int THREE = 16;
-    public static final int FOUR = 17;
-    public static final int FIVE = 18;
-    public static final int SIX = 19;
-    public static final int SEVEN = 20;
-    public static final int EIGHT = 21;
-    public static final int NINE = 22;
-    public static final int TEN = 23;
-    public static final int ELEVEN = 24;
+    public static final int SUBTR = 3;
+    public static final int MULT = 4;
+    public static final int DIV = 5;
+    public static final int MAX = 6;
+    public static final int AVG2 = 7;
+    public static final int AVG3 = 8;
+    public static final int IF = 9;
+    public static final int X = 10;
+    public static final int Y = 11;
+    public static final int NORTH = 12;
+    public static final int WEST = 13;
+    public static final int NORTH_WEST = 14;
+    public static final int RANDOM = 15;
+    public static final int ZERO = 16;
+    public static final int ONE = 17;
+    public static final int TWO = 18;
+    public static final int THREE = 19;
+    public static final int FOUR = 20;
+    public static final int FIVE = 21;
+    public static final int SIX = 22;
+    public static final int SEVEN = 23;
+    public static final int EIGHT = 24;
+    public static final int NINE = 25;
+    public static final int TEN = 26;
+    public static final int ELEVEN = 27;
 
     public enum DiscreteColor {
         RED, ORANGE, YELLOW, LIME, GREEN, SEA_GREEN, LIGHT_BLUE, MEDIUM_BLUE, BLUE, PURPLE, MAGENTA, PINK
     }
 
     public enum EvalTypes {
-        HUMAN, GRADIENT, STDEV, RAINBOW, SQUARES, X, INVERSE_X, SIM_NEIGHBOR
+        HUMAN, GRADIENT, STDEV, RAINBOW, SQUARES, X, INVERSE_X, SIM_NEIGHBOR,RANDO
     }
 
     public static final int numColors = DiscreteColor.values().length;
@@ -177,6 +180,15 @@ public class Grid {
         return fitness;
     }
 
+    private int randoEval() {
+        int neighborsFit = simNeighborsEval();
+        int gradFit = gradientEval();
+        int squareFit = squareEval();
+        int rainbowFit = rainbowEval();
+        int avgFit = (neighborsFit + gradFit + squareFit + rainbowFit) / 4;
+        return avgFit;
+    }
+
     // determine the fitness of the current state of the grid. fitness is (maxScore+1) - score
     // where score is the number of sides of blocks that are touching a wall
     public int calcFitness(EvalTypes evalType) {
@@ -197,6 +209,8 @@ public class Grid {
                 return inverseXEval();
             case SIM_NEIGHBOR:
                 return simNeighborsEval();
+            case RANDO:
+                return randoEval();
         }
         return 0;
     }

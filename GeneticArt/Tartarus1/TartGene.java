@@ -57,6 +57,22 @@ public class TartGene extends GPGene {
             result = ( (TartGene)get(0) ).evaluate(cfg, gp, pixelInfo) + ( (TartGene)get(1) ).evaluate(cfg, gp, pixelInfo);
             return result;
 
+        case Grid.SUBTR:
+            result = ( (TartGene)get(0) ).evaluate(cfg, gp, pixelInfo) - ( (TartGene)get(1) ).evaluate(cfg, gp, pixelInfo);
+            return result;
+
+        case Grid.MULT:
+            result = ( (TartGene)get(0) ).evaluate(cfg, gp, pixelInfo) * ( (TartGene)get(1) ).evaluate(cfg, gp, pixelInfo);
+            return result;
+
+        case Grid.DIV:
+            int temp = ((TartGene) get(1)).evaluate(cfg, gp, pixelInfo);
+            if (temp == 0) {
+                temp = 1;
+            }
+            result = ((TartGene) get(0)).evaluate(cfg, gp, pixelInfo) / temp;
+            return result;
+
         case Grid.MAX:
             arg1 = ( (TartGene)get(0) ).evaluate(cfg, gp, pixelInfo);
             arg2 = ( (TartGene)get(1) ).evaluate(cfg, gp, pixelInfo);

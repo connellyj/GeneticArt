@@ -35,12 +35,15 @@ class Tartarus extends GPRun {
     //  initialized set of functions & terminals
     protected GPAdfNodeSet createNodeSet(GPVariables cfg) {
  
-        GPNodeSet ns0 = new GPNodeSet(25);
+        GPNodeSet ns0 = new GPNodeSet(28);
 
         //MAIN TREE
         ns0.putNode(new GPNode(Grid.INC, "inc", 1));
         ns0.putNode(new GPNode(Grid.ABS, "abs", 1));
         ns0.putNode(new GPNode(Grid.ADD, "add", 2));
+        ns0.putNode(new GPNode(Grid.SUBTR, "subtr", 2));
+        ns0.putNode(new GPNode(Grid.MULT, "mult", 2));
+        ns0.putNode(new GPNode(Grid.DIV, "div", 2));
         ns0.putNode(new GPNode(Grid.MAX, "max", 2));
         ns0.putNode(new GPNode(Grid.AVG2, "avg2", 2));
         ns0.putNode(new GPNode(Grid.AVG3, "avg3", 3));

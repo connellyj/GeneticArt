@@ -1,4 +1,4 @@
-PopulationSize            = 5
+PopulationSize            = 20
 NumberOfGenerations       = 10
 CrossoverProbability      = 50.0
 CreationProbability       = 0.0
@@ -31,15 +31,32 @@ NumTestImages             = 1
 ImageDimension            = 512
 EvalType                  = 0
 
-RPB:  inc(1) abs(1) add(2) max(2) avg2(2) avg3(3) if(3) 11 10 9 8 7 6 5 4 3 2 1 0 rand NW W N y x
+RPB:  inc(1) abs(1) add(2) subtr(2) mult(2) div(2) max(2) avg2(2) avg3(3) if(3) 11 10 9 8 7 6 5 4 3 2 1 0 rand NW W N y x
 
 
 Run number 1 (good runs 0)
-Too complex 101
+Too complex 413
 
  Gen|              Fitness           |   Complexity    |    Depth   
     |      Best    Average      Worst|   B      A     W|  B    A   W
-   0|      2.00       6.20      10.00|  46   76.0    99|  7  7.8   7  
-   1|      2.00       6.60      10.00|  46   43.6    72|  7  7.2   8  
-   2|      2.00       7.00      10.00|  46   44.6    46|  7  7.0   7  
-   3|      1.00       6.60      10.00|  43   44.8    48|  7  7.2   8  
+   0|      4.00       8.50      10.00|  71  107.8   186|  7  7.4   8  
+   1|      2.00       6.60      10.00| 161  108.1     3|  9  7.7   2  
+   2|      2.00       7.00      10.00| 161  117.4    32|  9  9.0   7  
+   3|      1.00       7.45      10.00| 163  140.0   158|  9  9.2   9  
+   4|      1.00       7.55      10.00| 163  112.6   162|  9  8.8   9  
+   5|      1.00       7.35       9.00| 163  128.3   163|  9  9.0   9  
+   6|      1.00       6.00       9.00|  79  128.2   164| 10  9.3   9  
+   7|      1.00       5.80      10.00|  68  124.1    34| 10 10.2   8  
+   8|      1.00       5.90      10.00|  68   92.6   180| 10  9.7  12  
+   9|      1.00       6.50      10.00|  68   70.8    91| 10  9.4   9  
+  10|      1.00       6.65      10.00|  55   65.2    78|  9  8.8  10 c
+
+========================================================================
+Generation:10 best:9 worst:16
+  GP#           dad           mum oper mut shrk mut    fitness  len  dep
+===== ============= ============= ======== ======== ========== ==== ====
+B   9     14:RPB:48      11:RPB:3   RPB:37                1.00   55    9
+
+FINAL FITNESS = 3.0
+Run time 622.49 seconds, 57.04 seconds/generation
+
