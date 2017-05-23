@@ -46,6 +46,8 @@ public class Grid {
     public static final int NINE = 25;
     public static final int TEN = 26;
     public static final int ELEVEN = 27;
+    public static final int SIN = 28;
+    public static final int COS = 29;
 
     public enum DiscreteColor {
         RED, ORANGE, YELLOW, LIME, GREEN, SEA_GREEN, LIGHT_BLUE, MEDIUM_BLUE, BLUE, PURPLE, MAGENTA, PINK

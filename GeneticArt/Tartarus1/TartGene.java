@@ -156,6 +156,12 @@ public class TartGene extends GPGene {
         case Grid.ELEVEN:
             return 11;
 
+        case Grid.SIN:
+            return (int)Math.floor(Math.abs(Math.sin(((TartGene)get(0)).evaluate(cfg, gp, pixelInfo))) % Grid.numColors);
+
+        case Grid.COS:
+            return (int)Math.floor(Math.abs(Math.cos(((TartGene)get(0)).evaluate(cfg, gp, pixelInfo))) % Grid.numColors);
+
         default:
             throw new RuntimeException("Undefined function type "+node.value());
         }
