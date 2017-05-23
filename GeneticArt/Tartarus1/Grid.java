@@ -52,7 +52,7 @@ public class Grid {
     }
 
     public enum EvalTypes {
-        HUMAN, GRADIENT, STDEV, RAINBOW, SQUARES, X, INVERSE_X, SIM_NEIGHBOR, RANDO, WEIGHTED, HOUGH, BLUE_GREEN, SYMMETRY
+        HUMAN, GRADIENT, STDEV, RAINBOW, SQUARES, X, INVERSE_X, SIM_NEIGHBOR, RANDO, WEIGHTED, BLUE_GREEN, SYMMETRY
     }
 
     public static final int numColors = DiscreteColor.values().length;
@@ -82,21 +82,6 @@ public class Grid {
     public void colorPixel(int color, BufferedWriter out) {
         colors.add(color);
         if(out != null) updateFile(out, color);
-    }
-
-    private int houghEval() {
-        WritableImage image = new WritableImage(imageDimension, imageDimension);
-        PixelWriter p = image.getPixelWriter();
-        for(int x = 0; x < imageDimension; x++) {
-            for(int y = 0; y < imageDimension; y++) {
-                Color color = discreteColors.get(colors.get(imageDimension * y + x));
-                color = color.grayscale();
-                p.setColor(x, y, color);
-            }
-        }
-        HoughTransform h = new HoughTransform(SwingFXUtils.fromFXImage(image, null));
-        Vector<HoughLine> l = h.getLines();
-        return l.size();
     }
 
     private int weightedEval() {
@@ -346,8 +331,6 @@ public class Grid {
                 return randoEval();
             case WEIGHTED:
                 return weightedEval();
-            case HOUGH:
-                return houghEval();
             case BLUE_GREEN:
                 return blueGreenEval();
             case SYMMETRY:
