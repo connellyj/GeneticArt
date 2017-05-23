@@ -87,30 +87,21 @@ public class Grid {
     private int weightedEval() {
         int fitness = imageDimension * imageDimension;
         int grads = 0;
-        int equalHoriz = 0;
-        int equalVert = 0;
-        int dif = 0;
+        int equal = 0;
         for (int i = 0; i < imageDimension * imageDimension; i++) {
             if (isGradient(i)) {
                 fitness--;
                 grads++;
-            } else if (i > 0 && ((int) colors.get(i)) == ((int) colors.get(i - 1)) ||
-                    i < imageDimension * imageDimension - 1 && ((int) colors.get(i)) == ((int) colors.get(i + 1))) {
+            } else if ((i > 0 && ((int) colors.get(i)) == ((int) colors.get(i - 1))) ||
+                    (i < imageDimension * imageDimension - 1 && ((int) colors.get(i)) == ((int) colors.get(i + 1))) //||
+                    //(i >= imageDimension && ((int)colors.get(i)) == ((int)colors.get(i - imageDimension))) ||
+                    /*(i < imageDimension * imageDimension - imageDimension - 1 && ((int)colors.get(i)) == ((int)colors.get(i + imageDimension)))*/) {
                 fitness--;
-                equalHoriz++;
-            }//else if(i >= imageDimension && ((int)colors.get(i)) == ((int)colors.get(i - imageDimension)) &&
-//                    i < imageDimension * imageDimension - imageDimension - 1 && ((int)colors.get(i)) == ((int)colors.get(i +imageDimension))) {
-//                fitness--;
-//                equalVert++;
-//            /*}*/else if(i > 0 && Math.abs(colors.get(i) - colors.get(i - 1)) >= 4 ||
-//                    i < imageDimension * imageDimension - 1 && Math.abs(colors.get(i) - colors.get(i + 1)) >= 4 ||
-//                    i >= imageDimension && Math.abs(colors.get(i) - colors.get(i - imageDimension)) >= 4 ||
-//                    i < imageDimension * imageDimension - imageDimension &&  Math.abs(colors.get(i) - colors.get(i + imageDimension)) >= 4) {
-//                fitness--;
-//                dif++;
-//            }
+                equal++;
+            }
         }
-        if (Math.abs(grads - equalHoriz) > 100) fitness = imageDimension * imageDimension;
+        if(Math.abs(grads - equal) > 100) fitness = imageDimension * imageDimension;
+        if(calcStdDev() < 0.5) fitness = imageDimension * imageDimension;
         return fitness;
     }
 
