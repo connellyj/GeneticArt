@@ -95,8 +95,8 @@ public class Grid {
             }
         }
         HoughTransform h = new HoughTransform(SwingFXUtils.fromFXImage(image, null));
-        Vector<HoughLine> l = h.getLines(100);
-        return 0;
+        Vector<HoughLine> l = h.getLines();
+        return l.size();
     }
 
     private int weightedEval() {

@@ -1,4 +1,5 @@
-package Tartarus1;// gpjpp example program
+package Tartarus1;
+// gpjpp example program
 // Copyright (c) 1997, Kim Kokkonen
 //
 // This program is free software; you can redistribute it and/or 
@@ -24,7 +25,6 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
-
 import javax.imageio.ImageIO;
 
 //extend GP for lawn mowing
@@ -63,8 +63,7 @@ public class TartGP extends GP {
 
             // evaluate main tree for 80 steps of the dozer
             // Maybe I should use a grid thing but with color
-            evaluateImage(tcfg, null);
-            totFit += tcfg.dozerGrid.calcFitness(Grid.EvalTypes.values()[tcfg.EvalType]);
+            totFit += evaluateImage(tcfg, null);
         }
         totFit = totFit/tcfg.NumTestImages;
         if (cfg.ComplexityAffectsFitness)
@@ -113,8 +112,7 @@ public class TartGP extends GP {
             tcfg.createGrid();
 
             //evaluate main tree for 80 steps of the dozer, printing grid after each move
-            evaluateImage(tcfg, out);
-            curGridFit = tcfg.dozerGrid.calcFitness(Grid.EvalTypes.values()[tcfg.EvalType]);
+            curGridFit = evaluateImage(tcfg, out);
             tcfg.dozerGrid.outputFitness(out, curGridFit);
         }
         try{
@@ -148,33 +146,8 @@ public class TartGP extends GP {
 
             //evaluate main tree for max steps of the dozer (given in .ini file)
 	        // writing grid after each move
-            evaluateImage(tcfg, out);
-            Platform.runLater(() -> {
-                WritableImage image = new WritableImage(tcfg.ImageDimension, tcfg.ImageDimension);
-                PixelWriter p = image.getPixelWriter();
-                for(int x = 0; x < tcfg.ImageDimension; x++) {
-                    for(int y = 0; y < tcfg.ImageDimension; y++) {
-                        p.setColor(x, y, tcfg.dozerGrid.discreteColors.get(tcfg.dozerGrid.colors.get(tcfg.ImageDimension * y + x)));
-                    }
-                }
-                ImageView imageView = new ImageView(image);
-                imageView.setPreserveRatio(true);
-                imageView.setFitWidth(512);
-                imageView.setSmooth(false);
-                Main.rootPane.getChildren().clear();
-                Main.rootPane.getChildren().add(imageView);
-
-                File outputFile = new File("genetic-art.png");
-                BufferedImage bImage = SwingFXUtils.fromFXImage(image, null);
-                try {
-                    ImageIO.write(bImage, "png", outputFile);
-                } catch (IOException e) {
-                    System.out.println("Error saving image");
-                    e.printStackTrace();
-                }
-
-            });
-            curGridFit = tcfg.dozerGrid.calcFitness(Grid.EvalTypes.values()[tcfg.EvalType]);
+            curGridFit = evaluateImage(tcfg, out);
+            displayImage(tcfg);
             tcfg.dozerGrid.outputFitness(out, curGridFit);
             totFit += curGridFit;
         }
@@ -191,22 +164,39 @@ public class TartGP extends GP {
         os.println("FINAL FITNESS = "+totFit);
     }
 
-    private void evaluateImage(TartVariables tcfg, BufferedWriter out) {
+    private int evaluateImage(TartVariables tcfg, BufferedWriter out) {
         for (int i=0; i<tcfg.ImageDimension * tcfg.ImageDimension; i++) {
-            int x = i % tcfg.ImageDimension;
-            int y = i / tcfg.ImageDimension;
-            int north = 0;
-            int northIndex = i - tcfg.ImageDimension;
-            if(northIndex >= 0) north = tcfg.dozerGrid.colors.get(northIndex);
-            int west = 0;
-            int westIndex = i - 1;
-            if((westIndex + 1) % tcfg.ImageDimension != 0 & westIndex >= 0) west = tcfg.dozerGrid.colors.get(westIndex);
-            int northWest = 0;
-            int northWestIndex = northIndex - 1;
-            if((northWestIndex + 1) % tcfg.ImageDimension != 0 && northWestIndex >= 0) northWest = tcfg.dozerGrid.colors.get(northWestIndex);
-            PixelInfo pixelInfo = new PixelInfo(x, y, north, west, northWest);
+            PixelInfo pixelInfo = new PixelInfo(i, tcfg.ImageDimension, tcfg.dozerGrid.colors);
             int result = ((TartGene)get(0)).evaluate(tcfg, this, pixelInfo);
             tcfg.dozerGrid.colorPixel(Math.abs(result) % Grid.numColors, out);
         }
+        return tcfg.dozerGrid.calcFitness(Grid.EvalTypes.values()[tcfg.EvalType]);
+    }
+
+    private void displayImage(TartVariables tcfg) {
+        Platform.runLater(() -> {
+            WritableImage image = new WritableImage(tcfg.ImageDimension, tcfg.ImageDimension);
+            PixelWriter p = image.getPixelWriter();
+            for(int x = 0; x < tcfg.ImageDimension; x++) {
+                for(int y = 0; y < tcfg.ImageDimension; y++) {
+                    p.setColor(x, y, tcfg.dozerGrid.discreteColors.get(tcfg.dozerGrid.colors.get(tcfg.ImageDimension * y + x)));
+                }
+            }
+            ImageView imageView = new ImageView(image);
+            imageView.setPreserveRatio(true);
+            imageView.setFitWidth(512);
+            imageView.setSmooth(false);
+            Main.rootPane.getChildren().clear();
+            Main.rootPane.getChildren().add(imageView);
+
+//            File outputFile = new File("genetic-art.png");
+//            BufferedImage bImage = SwingFXUtils.fromFXImage(image, null);
+//            try {
+//                ImageIO.write(bImage, "png", outputFile);
+//            } catch (IOException e) {
+//                System.out.println("Error saving image");
+//                e.printStackTrace();
+//            }
+        });
     }
 }
