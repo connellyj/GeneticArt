@@ -52,7 +52,7 @@ public class Grid {
     }
 
     public enum EvalTypes {
-        HUMAN, GRADIENT, STDEV, RAINBOW, SQUARES, X, INVERSE_X, SIM_NEIGHBOR, RANDO, WEIGHTED, HOUGH
+        HUMAN, GRADIENT, STDEV, RAINBOW, SQUARES, X, INVERSE_X, SIM_NEIGHBOR, RANDO, WEIGHTED, HOUGH, BLUE_GREEN, SYMMETRY
     }
 
     public static final int numColors = DiscreteColor.values().length;
@@ -105,12 +105,12 @@ public class Grid {
         int equalHoriz = 0;
         int equalVert = 0;
         int dif = 0;
-        for(int i = 0; i < imageDimension * imageDimension; i++) {
-            if(isGradient(i)) {
+        for (int i = 0; i < imageDimension * imageDimension; i++) {
+            if (isGradient(i)) {
                 fitness--;
                 grads++;
-            }else if(i > 0 && ((int)colors.get(i)) == ((int)colors.get(i - 1)) ||
-                    i < imageDimension * imageDimension - 1 && ((int)colors.get(i)) == ((int)colors.get(i + 1))) {
+            } else if (i > 0 && ((int) colors.get(i)) == ((int) colors.get(i - 1)) ||
+                    i < imageDimension * imageDimension - 1 && ((int) colors.get(i)) == ((int) colors.get(i + 1))) {
                 fitness--;
                 equalHoriz++;
             }//else if(i >= imageDimension && ((int)colors.get(i)) == ((int)colors.get(i - imageDimension)) &&
@@ -125,8 +125,23 @@ public class Grid {
 //                dif++;
 //            }
         }
-        if(Math.abs(grads - equalHoriz) > 100) fitness = imageDimension * imageDimension;
+        if (Math.abs(grads - equalHoriz) > 100) fitness = imageDimension * imageDimension;
         return fitness;
+    }
+
+    private double calcStdDev() {
+        double mean = 0.0;
+        for(int i = 0; i < imageDimension * imageDimension; i++) {
+            mean += colors.get(i);
+        }
+        if(mean != 0.0) mean /= (imageDimension * imageDimension);
+        double stdev = 0;
+        for(int i = 0; i < imageDimension * imageDimension; i++) {
+            stdev += Math.pow(colors.get(i) - mean, 2.0);
+        }
+        stdev /= numColors;
+        stdev = Math.sqrt(stdev);
+        return stdev;
     }
 
     private int humanEval() {
@@ -209,17 +224,7 @@ public class Grid {
     }
 
     private int stdevEval() {
-        double mean = 0.0;
-        for(int i = 0; i < imageDimension * imageDimension; i++) {
-            mean += colors.get(i);
-        }
-        if(mean != 0.0) mean /= (imageDimension * imageDimension);
-        double stdev = 0;
-        for(int i = 0; i < imageDimension * imageDimension; i++) {
-            stdev += Math.pow(colors.get(i) - mean, 2.0);
-        }
-        stdev /= numColors;
-        stdev = Math.sqrt(stdev);
+        double stdev = calcStdDev();
         return 100 - (int)Math.floor(stdev);
     }
 
@@ -279,6 +284,44 @@ public class Grid {
         return avgFit;
     }
 
+    private int blueGreenEval() {
+        int fitness = imageDimension * imageDimension * 3;
+        for(int x = 0; x < imageDimension; x++) {
+            for(int y = 0; y < imageDimension; y++) {
+                if (colors.get(imageDimension * y + x) >= 4 &&
+                        colors.get(imageDimension * y + x) <= 8) {
+                    fitness--;
+                }
+            }
+        }
+        double stdev = calcStdDev();
+        fitness = (int) Math.floor(fitness - stdev * 50);
+        int gradFit = gradientEval();
+        fitness = fitness - gradFit;
+
+        return fitness;
+    }
+
+    private int symmetryEval() {
+        int fitness = imageDimension * imageDimension;
+        int xMirror;
+        int yMirror;
+        for(int x = 0; x < imageDimension; x++) {
+            for (int y = 0; y < imageDimension; y++) {
+                xMirror = imageDimension - x - 1;
+                yMirror = imageDimension - y - 1;
+                if (colors.get(imageDimension * y + x) == colors.get(imageDimension * yMirror + xMirror)) {
+                    fitness--;
+                }
+            }
+        }
+        double standardDev = calcStdDev();
+        if (standardDev < 2) {
+            return imageDimension * imageDimension;
+        }
+        return fitness;
+    }
+
     // determine the fitness of the current state of the grid. fitness is (maxScore+1) - score
     // where score is the number of sides of blocks that are touching a wall
     public int calcFitness(EvalTypes evalType) {
@@ -305,6 +348,10 @@ public class Grid {
                 return weightedEval();
             case HOUGH:
                 return houghEval();
+            case BLUE_GREEN:
+                return blueGreenEval();
+            case SYMMETRY:
+                return symmetryEval();
         }
         return 0;
     }
