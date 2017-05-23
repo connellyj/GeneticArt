@@ -1,10 +1,13 @@
 package Tartarus1;
 
 import javafx.application.Platform;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+
+import java.awt.image.BufferedImage;
 import java.util.*;
 import java.io.*;
 
@@ -49,7 +52,7 @@ public class Grid {
     }
 
     public enum EvalTypes {
-        HUMAN, GRADIENT, STDEV, RAINBOW, SQUARES, X, INVERSE_X, SIM_NEIGHBOR,RANDO
+        HUMAN, GRADIENT, STDEV, RAINBOW, SQUARES, X, INVERSE_X, SIM_NEIGHBOR, RANDO, WEIGHTED, HOUGH
     }
 
     public static final int numColors = DiscreteColor.values().length;
@@ -81,6 +84,51 @@ public class Grid {
         if(out != null) updateFile(out, color);
     }
 
+    private int houghEval() {
+        WritableImage image = new WritableImage(imageDimension, imageDimension);
+        PixelWriter p = image.getPixelWriter();
+        for(int x = 0; x < imageDimension; x++) {
+            for(int y = 0; y < imageDimension; y++) {
+                Color color = discreteColors.get(colors.get(imageDimension * y + x));
+                color = color.grayscale();
+                p.setColor(x, y, color);
+            }
+        }
+        HoughTransform h = new HoughTransform(SwingFXUtils.fromFXImage(image, null));
+        Vector<HoughLine> l = h.getLines(100);
+        return 0;
+    }
+
+    private int weightedEval() {
+        int fitness = imageDimension * imageDimension;
+        int grads = 0;
+        int equalHoriz = 0;
+        int equalVert = 0;
+        int dif = 0;
+        for(int i = 0; i < imageDimension * imageDimension; i++) {
+            if(isGradient(i)) {
+                fitness--;
+                grads++;
+            }else if(i > 0 && ((int)colors.get(i)) == ((int)colors.get(i - 1)) ||
+                    i < imageDimension * imageDimension - 1 && ((int)colors.get(i)) == ((int)colors.get(i + 1))) {
+                fitness--;
+                equalHoriz++;
+            }//else if(i >= imageDimension && ((int)colors.get(i)) == ((int)colors.get(i - imageDimension)) &&
+//                    i < imageDimension * imageDimension - imageDimension - 1 && ((int)colors.get(i)) == ((int)colors.get(i +imageDimension))) {
+//                fitness--;
+//                equalVert++;
+//            /*}*/else if(i > 0 && Math.abs(colors.get(i) - colors.get(i - 1)) >= 4 ||
+//                    i < imageDimension * imageDimension - 1 && Math.abs(colors.get(i) - colors.get(i + 1)) >= 4 ||
+//                    i >= imageDimension && Math.abs(colors.get(i) - colors.get(i - imageDimension)) >= 4 ||
+//                    i < imageDimension * imageDimension - imageDimension &&  Math.abs(colors.get(i) - colors.get(i + imageDimension)) >= 4) {
+//                fitness--;
+//                dif++;
+//            }
+        }
+        if(Math.abs(grads - equalHoriz) > 100) fitness = imageDimension * imageDimension;
+        return fitness;
+    }
+
     private int humanEval() {
         Platform.runLater(() -> {
             WritableImage image = new WritableImage(imageDimension, imageDimension);
@@ -97,23 +145,65 @@ public class Grid {
         return getFitnessFromUser();
     }
 
+    private boolean isGradient(int i) {
+        int northIndex = -1;
+        int northEastIndex = -1;
+        int eastIndex = -1;
+        int southEastIndex = -1;
+        int southIndex = -1;
+        int southWestIndex = -1;
+        int westIndex = -1;
+        int northWestIndex = -1;
+        if(i >= imageDimension) {
+            northIndex = i - imageDimension;
+        }
+        if(i <= imageDimension * imageDimension - imageDimension - 1) {
+            southIndex = i + imageDimension;
+        }
+        if((i + 1) % imageDimension != 0) {
+            eastIndex = i + 1;
+        }
+        if(i % imageDimension != 0) {
+            westIndex = i - 1;
+        }
+        if(northIndex != -1 && eastIndex != -1) {
+            northEastIndex = northIndex + 1;
+        }
+        if(northIndex != -1 && westIndex != -1) {
+            northWestIndex = northIndex - 1;
+        }
+        if(southIndex != -1 && eastIndex != -1) {
+            southEastIndex = southIndex + 1;
+        }
+        if(southIndex != -1 && westIndex != -1) {
+            southWestIndex = southIndex - 1;
+        }
+        int cur = colors.get(i);
+        int north = 1;
+        if(northIndex != -1) north = Math.abs(colors.get(northIndex) - cur);
+        int northEast = 1;
+        if(northEastIndex != -1) northEast = Math.abs(colors.get(northEastIndex) - cur);
+        int east = 1;
+        if(eastIndex != -1) east = Math.abs(colors.get(eastIndex) - cur);
+        int southEast = 1;
+        if(southEastIndex != -1) southEast = Math.abs(colors.get(southEastIndex) - cur);
+        int south = 1;
+        if(southIndex != -1) south= Math.abs(colors.get(southIndex) - cur);
+        int southWest = 1;
+        if(southWestIndex != -1) southWest = Math.abs(colors.get(southWestIndex) - cur);
+        int west = 1;
+        if(westIndex != -1) west = Math.abs(colors.get(westIndex) - cur);
+        int northWest = 1;
+        if(northWestIndex != -1) northWest = Math.abs(colors.get(northWestIndex) - cur);
+        return north >= 1 && north < 4 && northEast >= 1 && northEast < 4 && east >= 1 && east < 4 &&
+                southEast >= 1 && southEast < 4 && south >= 1 && south < 4 && southWest >= 1 && southWest < 4 &&
+                west >= 1 && west < 4 && northWest >= 1 && northWest < 4;
+    }
+
     private int gradientEval() {
         int fitness = imageDimension * imageDimension;
         for(int i = 0; i < imageDimension * imageDimension; i++) {
-            int north = 0;
-            int northIndex = i - imageDimension;
-            if(northIndex > 0) north = colors.get(northIndex);
-            int west = 0;
-            int westIndex = i - 1;
-            if((westIndex + 1) % imageDimension != 0 && westIndex > 0) west = colors.get(westIndex);
-            int northWest = 0;
-            int northWestIndex = northIndex - 1;
-            if((northWestIndex + 1) % imageDimension != 0 && northWestIndex > 0) northWest = colors.get(northWestIndex);
-            int cur = colors.get(i);
-            int ndif = Math.abs(north - cur);
-            int wdif = Math.abs(west - cur);
-            int nwdif = Math.abs(northWest - cur);
-            if(ndif >= 1 && ndif < 4 && wdif >= 1 && wdif < 4 && nwdif >= 1 && nwdif < 4) fitness -= 1;
+            if(isGradient(i)) fitness--;
         }
         return fitness;
     }
@@ -170,10 +260,10 @@ public class Grid {
         for(int x = 1; x < imageDimension - 1; x++) {
             for(int y = 1; y < imageDimension - 1; y++) {
                 int cur = colors.get(x * y + x);
-                int dif1 = colors.get((x - 1) * y + (x - 1)) - cur;
-                int dif2 = colors.get((x - 1) * (y - 1) + (x - 1)) - cur;
-                int dif3 = colors.get((x + 1) * (y + 1) + (x + 1)) - cur;
-                int dif4 = colors.get((x + 1) * y + (x + 1)) - cur;
+                int dif1 = colors.get(imageDimension * y + (x - 1)) - cur;
+                int dif2 = colors.get(imageDimension * (y - 1) + (x - 1)) - cur;
+                int dif3 = colors.get(imageDimension * (y + 1) + (x + 1)) - cur;
+                int dif4 = colors.get(imageDimension * y + (x + 1)) - cur;
                 if(dif1 > 0 && dif1 < 4 && dif2 > 0 && dif2 < 4 && dif3 > 0 && dif3 < 4 && dif4 > 0 && dif4 < 4) fitness--;
             }
         }
@@ -211,6 +301,10 @@ public class Grid {
                 return simNeighborsEval();
             case RANDO:
                 return randoEval();
+            case WEIGHTED:
+                return weightedEval();
+            case HOUGH:
+                return houghEval();
         }
         return 0;
     }
