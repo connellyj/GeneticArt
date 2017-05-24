@@ -25,6 +25,8 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
+
 import javax.imageio.ImageIO;
 
 //extend GP for lawn mowing
@@ -167,8 +169,12 @@ public class TartGP extends GP {
     private int evaluateImage(TartVariables tcfg, BufferedWriter out) {
         for (int i=0; i<tcfg.ImageDimension * tcfg.ImageDimension; i++) {
             PixelInfo pixelInfo = new PixelInfo(i, tcfg.ImageDimension, tcfg.dozerGrid.colors);
-            int result = ((TartGene)get(0)).evaluate(tcfg, this, pixelInfo);
-            tcfg.dozerGrid.colorPixel(Math.abs(result) % Grid.numColors, out);
+            ColorVector result = ((TartGene)get(0)).evaluate(tcfg, this, pixelInfo);
+            result.abs();
+            for(int j = 0; j < 3; j++) {
+                if(result.rgbColor[j] > 1.0) result.rgbColor[j] = 1.0;
+            }
+            tcfg.dozerGrid.colorPixel(new ColorVector(1.0, 1.0, 1.0));
         }
         return tcfg.dozerGrid.calcFitness(Grid.EvalTypes.values()[tcfg.EvalType]);
     }
@@ -179,7 +185,8 @@ public class TartGP extends GP {
             PixelWriter p = image.getPixelWriter();
             for(int x = 0; x < tcfg.ImageDimension; x++) {
                 for(int y = 0; y < tcfg.ImageDimension; y++) {
-                    p.setColor(x, y, tcfg.dozerGrid.discreteColors.get(tcfg.dozerGrid.colors.get(tcfg.ImageDimension * y + x)));
+                    ColorVector pixColor = tcfg.dozerGrid.colors.get(y * tcfg.ImageDimension + x);
+                    p.setColor(x, y, new Color(pixColor.getRed(), pixColor.getGreen(), pixColor.getBlue(), 1.0));
                 }
             }
             ImageView imageView = new ImageView(image);
