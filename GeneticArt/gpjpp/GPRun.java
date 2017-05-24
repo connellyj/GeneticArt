@@ -18,6 +18,8 @@
 
 package gpjpp;
 
+import Tartarus1.Main;
+
 import java.io.*;
 import java.util.Properties;
 import java.util.Random;
@@ -338,7 +340,7 @@ public abstract class GPRun {
                 boolean goodRun = false;
 
                 //loop through the generations
-                while (curGen < cfg.NumberOfGenerations) {
+                while (curGen < cfg.NumberOfGenerations && Main.shouldRun) {
                     //create next generation
                     curGen++;
                     gens++;

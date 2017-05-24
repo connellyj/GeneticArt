@@ -3,18 +3,27 @@ package Tartarus1;
 import javafx.application.Application;
 import javafx.concurrent.Task;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class Main extends Application {
 
     public static StackPane rootPane;
+    public static boolean shouldRun = true;
 
     public void start(Stage stage) {
+        Button button = new Button("Exit");
+        button.setOnAction((event) -> {
+            shouldRun = false;
+        });
+        VBox vbox = new VBox(button);
         Text text = new Text("Will display images later.");
         rootPane = new StackPane(text);
-        Scene scene = new Scene(rootPane, 512, 512);
+        vbox.getChildren().add(rootPane);
+        Scene scene = new Scene(vbox, 512, 512);
         stage.setScene(scene);
         stage.show();
 
