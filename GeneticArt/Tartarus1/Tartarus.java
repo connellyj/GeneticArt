@@ -35,39 +35,19 @@ class Tartarus extends GPRun {
     //  initialized set of functions & terminals
     protected GPAdfNodeSet createNodeSet(GPVariables cfg) {
  
-        GPNodeSet ns0 = new GPNodeSet(30);
+        GPNodeSet ns0 = new GPNodeSet(10);
 
         //MAIN TREE
-        ns0.putNode(new GPNode(Grid.INC, "inc", 1));
-        ns0.putNode(new GPNode(Grid.ABS, "abs", 1));
-        ns0.putNode(new GPNode(Grid.ADD, "add", 2));
-        ns0.putNode(new GPNode(Grid.SUBTR, "subtr", 2));
         ns0.putNode(new GPNode(Grid.MULT, "mult", 2));
-        ns0.putNode(new GPNode(Grid.DIV, "div", 2));
         ns0.putNode(new GPNode(Grid.MAX, "max", 2));
         ns0.putNode(new GPNode(Grid.AVG2, "avg2", 2));
         ns0.putNode(new GPNode(Grid.AVG3, "avg3", 3));
-        ns0.putNode(new GPNode(Grid.IF, "if", 3));
         ns0.putNode(new GPNode(Grid.X, "x"));
         ns0.putNode(new GPNode(Grid.Y, "y"));
         ns0.putNode(new GPNode(Grid.NORTH, "N"));
         ns0.putNode(new GPNode(Grid.WEST, "W"));
         ns0.putNode(new GPNode(Grid.NORTH_WEST, "NW"));
         ns0.putNode(new GPNode(Grid.RANDOM, "rand"));
-        ns0.putNode(new GPNode(Grid.ZERO, "0"));
-        ns0.putNode(new GPNode(Grid.ONE, "1"));
-        ns0.putNode(new GPNode(Grid.TWO, "2"));
-        ns0.putNode(new GPNode(Grid.THREE, "3"));
-        ns0.putNode(new GPNode(Grid.FOUR, "4"));
-        ns0.putNode(new GPNode(Grid.FIVE, "5"));
-        ns0.putNode(new GPNode(Grid.SIX, "6"));
-        ns0.putNode(new GPNode(Grid.SEVEN, "7"));
-        ns0.putNode(new GPNode(Grid.EIGHT, "8"));
-        ns0.putNode(new GPNode(Grid.NINE, "9"));
-        ns0.putNode(new GPNode(Grid.TEN, "10"));
-        ns0.putNode(new GPNode(Grid.ELEVEN, "11"));
-        ns0.putNode(new GPNode(Grid.SIN, "sin", 1));
-        ns0.putNode(new GPNode(Grid.COS, "cos", 1));
 
 	// ADF - Do NOT change
 	GPAdfNodeSet adfNs = new GPAdfNodeSet(1);

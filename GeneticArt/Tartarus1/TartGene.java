@@ -17,6 +17,7 @@ package Tartarus1;
 //
 
 import gpjpp.*;
+import javafx.scene.paint.Color;
 
 import java.util.Random;
 
@@ -42,70 +43,40 @@ public class TartGene extends GPGene {
     public GPGene createChild(GPNode gpo) { return new TartGene(gpo); }
 
     //called by TartGP.evaluate() for main branch of each GP
-    int evaluate(TartVariables cfg, TartGP gp, PixelInfo pixelInfo) {
-
-        int arg1, arg2, arg3, result;
+    Color evaluate(TartVariables cfg, TartGP gp, PixelInfo pixelInfo) {
+        Color c1, c2, c3;
         switch (node.value()) {
 
-        case Grid.INC:
-            return ( ( (TartGene)get(0) ).evaluate(cfg, gp, pixelInfo) + 1);
-
-        case Grid.ABS:
-            return Math.abs(((TartGene)get(0)).evaluate(cfg, gp, pixelInfo));
-
-        case Grid.ADD:
-            result = ( (TartGene)get(0) ).evaluate(cfg, gp, pixelInfo) + ( (TartGene)get(1) ).evaluate(cfg, gp, pixelInfo);
-            return result;
-
-        case Grid.SUBTR:
-            result = ( (TartGene)get(0) ).evaluate(cfg, gp, pixelInfo) - ( (TartGene)get(1) ).evaluate(cfg, gp, pixelInfo);
-            return result;
-
         case Grid.MULT:
-            result = ( (TartGene)get(0) ).evaluate(cfg, gp, pixelInfo) * ( (TartGene)get(1) ).evaluate(cfg, gp, pixelInfo);
-            return result;
-
-        case Grid.DIV:
-            int temp = ((TartGene) get(1)).evaluate(cfg, gp, pixelInfo);
-            if (temp == 0) {
-                temp = 1;
-            }
-            result = ((TartGene) get(0)).evaluate(cfg, gp, pixelInfo) / temp;
-            return result;
+            c1 = ((TartGene)get(0)).evaluate(cfg, gp, pixelInfo);
+            c2 = ((TartGene)get(1)).evaluate(cfg, gp, pixelInfo);
+            return new Color(c1.getRed() * c2.getRed(), c1.getGreen() * c2.getGreen(),
+                    c1.getBlue() * c2.getBlue(), 1.0);
 
         case Grid.MAX:
-            arg1 = ( (TartGene)get(0) ).evaluate(cfg, gp, pixelInfo);
-            arg2 = ( (TartGene)get(1) ).evaluate(cfg, gp, pixelInfo);
-            if (arg1 > arg2) return arg1;
-            else return arg2;
+            c1 = ((TartGene)get(0)).evaluate(cfg, gp, pixelInfo);
+            c2 = ((TartGene)get(1)).evaluate(cfg, gp, pixelInfo);
+            if(c1.getSaturation() > c2.getSaturation()) return c1;
+            return c2;
 
         case Grid.AVG2:
-            arg1 = ( (TartGene)get(0) ).evaluate(cfg, gp, pixelInfo);
-            arg2 = ( (TartGene)get(1) ).evaluate(cfg, gp, pixelInfo);
-            return (arg1 + arg2) / 2;
+            c1 = ((TartGene)get(0)).evaluate(cfg, gp, pixelInfo);
+            c2 = ((TartGene)get(1)).evaluate(cfg, gp, pixelInfo);
+            return c1.interpolate(c2, 0.5);
 
         case Grid.AVG3:
-            arg1 = ( (TartGene)get(0) ).evaluate(cfg, gp, pixelInfo);
-            arg2 = ( (TartGene)get(1) ).evaluate(cfg, gp, pixelInfo);
-            arg3 = ( (TartGene)get(2) ).evaluate(cfg, gp, pixelInfo);
-            return (arg1 + arg2 + arg3) / 3;
-
-        case Grid.IF:
-            arg1 = ( (TartGene)get(0) ).evaluate(cfg, gp, pixelInfo);
-            arg2 = ( (TartGene)get(1) ).evaluate(cfg, gp, pixelInfo);
-            arg3 = ( (TartGene)get(2) ).evaluate(cfg, gp, pixelInfo);
-            if (Math.floor(arg1) % 2 == 0) {
-                return arg2;
-            }
-            else {
-                return arg3;
-            }
+            c1 = ((TartGene)get(0)).evaluate(cfg, gp, pixelInfo);
+            c2 = ((TartGene)get(1)).evaluate(cfg, gp, pixelInfo);
+            c3 = ((TartGene)get(2)).evaluate(cfg, gp, pixelInfo);
+            return c1.interpolate(c2, 0.5).interpolate(c3, 0.5);
 
         case Grid.X:
-            return pixelInfo.xCoord;
+            double x = pixelInfo.xCoord / cfg.ImageDimension;
+            return new Color(x, x, x, 1.0);
 
         case Grid.Y:
-            return pixelInfo.yCoord;
+            double y = pixelInfo.yCoord / cfg.ImageDimension;
+            return new Color(y, y, y, 1.0);
 
         case Grid.NORTH:
             return pixelInfo.northColor;
@@ -118,49 +89,7 @@ public class TartGene extends GPGene {
 
         case Grid.RANDOM:
             Random r = new Random();
-            return r.nextInt(Grid.numColors);
-
-        case Grid.ZERO:
-            return 0;
-
-        case Grid.ONE:
-            return 1;
-
-        case Grid.TWO:
-            return 2;
-
-        case Grid.THREE:
-            return 3;
-
-        case Grid.FOUR:
-            return 4;
-
-        case Grid.FIVE:
-            return 5;
-
-        case Grid.SIX:
-            return 6;
-
-        case Grid.SEVEN:
-            return 7;
-
-        case Grid.EIGHT:
-            return 8;
-
-        case Grid.NINE:
-            return 9;
-
-        case Grid.TEN:
-            return 10;
-
-        case Grid.ELEVEN:
-            return 11;
-
-        case Grid.SIN:
-            return (int)Math.floor(Math.abs(Math.sin(((TartGene)get(0)).evaluate(cfg, gp, pixelInfo))) % Grid.numColors);
-
-        case Grid.COS:
-            return (int)Math.floor(Math.abs(Math.cos(((TartGene)get(0)).evaluate(cfg, gp, pixelInfo))) % Grid.numColors);
+            return new Color(r.nextDouble(), r.nextDouble(), r.nextDouble(),1.0);
 
         default:
             throw new RuntimeException("Undefined function type "+node.value());
