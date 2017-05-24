@@ -28,6 +28,20 @@ public class Grid {
     public static final int WEST = 7;
     public static final int NORTH_WEST = 8;
     public static final int RANDOM = 9;
+    public static final int RED = 10;
+    public static final int ORANGE = 11;
+    public static final int YELLOW = 12;
+    public static final int LIME = 13;
+    public static final int GREEN = 14;
+    public static final int SEA_GREEN = 15;
+    public static final int LIGHT_BLUE = 16;
+    public static final int MEDIUM_BLUE = 17;
+    public static final int BLUE = 18;
+    public static final int PURPLE = 19;
+    public static final int MAGENTA = 20;
+    public static final int PINK = 21;
+
+
 
     public enum DiscreteColor {
         RED, ORANGE, YELLOW, LIME, GREEN, SEA_GREEN, LIGHT_BLUE, MEDIUM_BLUE, BLUE, PURPLE, MAGENTA, PINK

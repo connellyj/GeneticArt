@@ -91,6 +91,42 @@ public class TartGene extends GPGene {
             Random r = new Random();
             return new Color(r.nextDouble(), r.nextDouble(), r.nextDouble(),1.0);
 
+        case Grid.RED:
+            return new Color(1.0, 0.0, 0.0, 1.0);
+
+        case Grid.ORANGE:
+            return new Color(1.0, 0.5, 0.0, 1.0);
+
+        case Grid.YELLOW:
+            return new Color(1.0, 1.0, 0.0, 1.0);
+
+        case Grid.LIME:
+            return new Color(0.5, 1.0, 0.0, 1.0);
+
+        case Grid.GREEN:
+            return new Color(0.0, 1.0, 0.0, 1.0);
+
+        case Grid.SEA_GREEN:
+            return new Color(0.0, 1.0, 0.5, 1.0);
+
+        case Grid.LIGHT_BLUE:
+            return new Color(0.0, 1.0, 1.0, 1.0);
+
+        case Grid.MEDIUM_BLUE:
+            return new Color(0.0, 0.5, 1.0, 1.0);
+
+        case Grid.BLUE:
+            return new Color(0.0, 0.0, 1.0, 1.0);
+
+        case Grid.PURPLE:
+            return new Color(0.5, 0.0, 1.0, 1.0);
+
+        case Grid.MAGENTA:
+            return new Color(1.0, 0.0, 1.0, 1.0);
+
+        case Grid.PINK:
+            return new Color(1.0, 0.0, 0.5, 1.0);
+
         default:
             throw new RuntimeException("Undefined function type "+node.value());
         }
