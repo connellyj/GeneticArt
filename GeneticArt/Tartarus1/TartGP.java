@@ -173,7 +173,7 @@ public class TartGP extends GP {
                 try {
                     results[j] = Math.abs(((TartGene)top.get(j)).evaluate(tcfg, this, pixelInfo, j)) % Grid.numColors;
                 } catch (IndexOutOfBoundsException e) {
-                    System.out.println("*****ERROR*****");
+                    System.out.println("*****some tree got its top rgb evolved out*****");
                     results[j] = 1;
                 }
             }
@@ -198,14 +198,14 @@ public class TartGP extends GP {
             Main.rootPane.getChildren().clear();
             Main.rootPane.getChildren().add(imageView);
 
-//            File outputFile = new File("genetic-art.png");
-//            BufferedImage bImage = SwingFXUtils.fromFXImage(image, null);
-//            try {
-//                ImageIO.write(bImage, "png", outputFile);
-//            } catch (IOException e) {
-//                System.out.println("Error saving image");
-//                e.printStackTrace();
-//            }
+            File outputFile = new File("genetic-art.png");
+            BufferedImage bImage = SwingFXUtils.fromFXImage(image, null);
+            try {
+                ImageIO.write(bImage, "png", outputFile);
+            } catch (IOException e) {
+                System.out.println("Error saving image");
+                e.printStackTrace();
+            }
         });
     }
 }

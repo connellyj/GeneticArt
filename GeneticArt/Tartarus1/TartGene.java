@@ -113,19 +113,19 @@ public class TartGene extends GPGene {
             return pixelInfo.yCoord;
 
         case Grid.NORTH:
-            if(rgb == 0) return (int)Math.floor(pixelInfo.northColor.getRed() * 255);
-            if(rgb == 1) return (int)Math.floor(pixelInfo.northColor.getGreen() * 255);
-            else return (int)Math.floor(pixelInfo.northColor.getBlue() * 255);
+            if(rgb == 0) return (int)Math.floor(pixelInfo.northColor.getRed() * Grid.numColors);
+            if(rgb == 1) return (int)Math.floor(pixelInfo.northColor.getGreen() * Grid.numColors);
+            else return (int)Math.floor(pixelInfo.northColor.getBlue() * Grid.numColors);
 
         case Grid.WEST:
-            if(rgb == 0) return (int)Math.floor(pixelInfo.westColor.getRed() * 255);
-            if(rgb == 1) return (int)Math.floor(pixelInfo.westColor.getGreen() * 255);
-            else return (int)Math.floor(pixelInfo.westColor.getBlue() * 255);
+            if(rgb == 0) return (int)Math.floor(pixelInfo.westColor.getRed() * Grid.numColors);
+            if(rgb == 1) return (int)Math.floor(pixelInfo.westColor.getGreen() * Grid.numColors);
+            else return (int)Math.floor(pixelInfo.westColor.getBlue() * Grid.numColors);
 
         case Grid.NORTH_WEST:
-            if(rgb == 0) return (int)Math.floor(pixelInfo.northWestColor.getRed() * 255);
-            if(rgb == 1) return (int)Math.floor(pixelInfo.northWestColor.getGreen() * 255);
-            else return (int)Math.floor(pixelInfo.northWestColor.getBlue() * 255);
+            if(rgb == 0) return (int)Math.floor(pixelInfo.northWestColor.getRed() * Grid.numColors);
+            if(rgb == 1) return (int)Math.floor(pixelInfo.northWestColor.getGreen() * Grid.numColors);
+            else return (int)Math.floor(pixelInfo.northWestColor.getBlue() * Grid.numColors);
 
         case Grid.RANDOM:
             Random r = new Random();
@@ -168,10 +168,10 @@ public class TartGene extends GPGene {
             return 11;
 
         case Grid.SIN:
-            return (int)Math.floor(Math.abs(Math.sin(((TartGene)get(0)).evaluate(cfg, gp, pixelInfo, rgb))) % Grid.numColors);
+            return (int)Math.floor(Math.abs(Math.sin(((TartGene)get(0)).evaluate(cfg, gp, pixelInfo, rgb))) * Grid.numColors);
 
         case Grid.COS:
-            return (int)Math.floor(Math.abs(Math.cos(((TartGene)get(0)).evaluate(cfg, gp, pixelInfo, rgb))) % Grid.numColors);
+            return (int)Math.floor(Math.abs(Math.cos(((TartGene)get(0)).evaluate(cfg, gp, pixelInfo, rgb))) * Grid.numColors);
 
         default:
             throw new RuntimeException("Undefined function type "+node.value());

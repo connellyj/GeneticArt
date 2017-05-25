@@ -111,7 +111,7 @@ public class Grid {
 //        return fitness;
 //    }
 
-    private int getIntFromColor(Color c) {
+    public static int getIntFromColor(Color c) {
         int R = (int)Math.round(255 * c.getRed());
         int G = (int) Math.round(255 * c.getGreen());
         int B = (int)Math.round(255 * c.getBlue());
@@ -120,7 +120,9 @@ public class Grid {
         G = (G << 8) & 0x0000FF00;
         B = B & 0x000000FF;
 
-        return 0xFF000000 | R | G | B;
+        int ret = 0xFF000000 | R | G | B;
+        //System.out.println(ret);
+        return ret;
     }
 
     private double calcStdDev() {
@@ -155,6 +157,8 @@ public class Grid {
     }
 
     private boolean isGradient(int i) {
+        int low = 1000;
+        int high = 20000;
         int northIndex = -1;
         int northEastIndex = -1;
         int eastIndex = -1;
@@ -204,9 +208,9 @@ public class Grid {
         if(westIndex != -1) west = Math.abs(getIntFromColor(colors.get(westIndex)) - cur);
         int northWest = 1;
         if(northWestIndex != -1) northWest = Math.abs(getIntFromColor(colors.get(northWestIndex)) - cur);
-        return north >= 1 && north < 255 && northEast >= 1 && northEast < 255 && east >= 1 && east < 255 &&
-                southEast >= 1 && southEast < 255 && south >= 1 && south < 255 && southWest >= 1 && southWest < 255 &&
-                west >= 1 && west < 255 && northWest >= 1 && northWest < 255;
+        return north >= low && north < high && northEast >= low && northEast < high && east >= low && east < high &&
+                southEast >= low && southEast < high && south >= low && south < high && southWest >= low && southWest < high &&
+                west >= low && west < high && northWest >= low && northWest < high;
     }
 
     private int gradientEval() {
