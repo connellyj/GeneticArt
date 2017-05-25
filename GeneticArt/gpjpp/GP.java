@@ -454,7 +454,7 @@ public class GP extends GPContainer {
 
             //choose random function from node set and create 
             //  a compatible gene to be the root of the tree
-            GPGene g = createGene(ns.chooseFunction());
+            GPGene g = createGene(ns.chooseFirstFunction());
             put(i, g);
 
             //create tree structure under the root
@@ -483,6 +483,7 @@ public class GP extends GPContainer {
 
         //select random tree
         int randTree = GPRandom.nextInt(containerSize());
+        if(randTree == 0) return;
 
         //get root gene
         GPGene rootGene = (GPGene)get(randTree);
@@ -541,6 +542,7 @@ public class GP extends GPContainer {
 
         //select random tree and get node set and root node
         int randTree = GPRandom.nextInt(containerSize());
+        if(randTree == 0) return;
         GPNodeSet ns = (GPNodeSet)adfNs.get(randTree);
         GPGene rootGene = (GPGene)get(randTree);
 
@@ -642,6 +644,7 @@ public class GP extends GPContainer {
 
         //pick random adf branch to cut from
         int randTree = GPRandom.nextInt(dad.containerSize());
+        if(randTree == 0) return parents;
         dad.crossTree = randTree;
         mum.crossTree = randTree;
 

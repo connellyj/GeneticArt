@@ -167,8 +167,17 @@ public class TartGP extends GP {
     private int evaluateImage(TartVariables tcfg, BufferedWriter out) {
         for (int i=0; i<tcfg.ImageDimension * tcfg.ImageDimension; i++) {
             PixelInfo pixelInfo = new PixelInfo(i, tcfg.ImageDimension, tcfg.dozerGrid.colors);
-            int result = ((TartGene)get(0)).evaluate(tcfg, this, pixelInfo);
-            tcfg.dozerGrid.colorPixel(Math.abs(result) % Grid.numColors, out);
+            TartGene top = ((TartGene)get(0));
+            int[] results = new int[3];
+            for(int j = 0; j < 3; j++) {
+                try {
+                    results[j] = Math.abs(((TartGene)top.get(j)).evaluate(tcfg, this, pixelInfo, j)) % Grid.numColors;
+                } catch (IndexOutOfBoundsException e) {
+                    System.out.println("*****ERROR*****");
+                    results[j] = 1;
+                }
+            }
+            tcfg.dozerGrid.colorPixel(results);
         }
         return tcfg.dozerGrid.calcFitness(Grid.EvalTypes.values()[tcfg.EvalType]);
     }
@@ -179,7 +188,7 @@ public class TartGP extends GP {
             PixelWriter p = image.getPixelWriter();
             for(int x = 0; x < tcfg.ImageDimension; x++) {
                 for(int y = 0; y < tcfg.ImageDimension; y++) {
-                    p.setColor(x, y, tcfg.dozerGrid.discreteColors.get(tcfg.dozerGrid.colors.get(tcfg.ImageDimension * y + x)));
+                    p.setColor(x, y, tcfg.dozerGrid.colors.get(tcfg.ImageDimension * y + x));
                 }
             }
             ImageView imageView = new ImageView(image);

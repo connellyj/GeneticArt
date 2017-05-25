@@ -196,6 +196,10 @@ public class GPNodeSet extends GPContainer {
         return (GPNode)get(GPRandom.nextInt(numFunctions));
     }
 
+    public GPNode chooseFirstFunction() {
+        return (GPNode)get(0);
+    }
+
     /**
      * Returns a random terminal node from this set. Used by
      * <a href="gpjpp.GPGene.html#create">GPGene.create()</a> 

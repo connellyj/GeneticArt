@@ -1,25 +1,27 @@
 package Tartarus1;
 
+import javafx.scene.paint.Color;
+
 import java.util.ArrayList;
 
 public class PixelInfo {
 
     public int xCoord;
     public int yCoord;
-    public int northColor;
-    public int westColor;
-    public int northWestColor;
+    public Color northColor;
+    public Color westColor;
+    public Color northWestColor;
 
-    public PixelInfo(int i, int imageDimension, ArrayList<Integer> colors) {
+    public PixelInfo(int i, int imageDimension, ArrayList<Color> colors) {
         int x = i % imageDimension;
         int y = i / imageDimension;
-        int north = 0;
+        Color north = Color.WHITE;
         int northIndex = i - imageDimension;
         if(northIndex >= 0) north = colors.get(northIndex);
-        int west = 0;
+        Color west = Color.WHITE;
         int westIndex = i - 1;
         if((westIndex + 1) % imageDimension != 0 & westIndex >= 0) west = colors.get(westIndex);
-        int northWest = 0;
+        Color northWest = Color.WHITE;
         int northWestIndex = northIndex - 1;
         if((northWestIndex + 1) % imageDimension != 0 && northWestIndex >= 0) northWest = colors.get(northWestIndex);
         this.xCoord = x;
