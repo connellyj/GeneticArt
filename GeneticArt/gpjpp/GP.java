@@ -483,7 +483,6 @@ public class GP extends GPContainer {
 
         //select random tree
         int randTree = GPRandom.nextInt(containerSize());
-        if(randTree == 0) return;
 
         //get root gene
         GPGene rootGene = (GPGene)get(randTree);
@@ -498,6 +497,9 @@ public class GP extends GPContainer {
 
             shrinkTree = randTree;
             shrinkPos = parentRef.count;
+
+            // force top node to remain rgb
+            if(shrinkPos <= 3) return;
 
             //display results before mutation
             //System.out.println("before shrink mutation, shrinkPos "+shrinkPos);
@@ -542,7 +544,6 @@ public class GP extends GPContainer {
 
         //select random tree and get node set and root node
         int randTree = GPRandom.nextInt(containerSize());
-        if(randTree == 0) return;
         GPNodeSet ns = (GPNodeSet)adfNs.get(randTree);
         GPGene rootGene = (GPGene)get(randTree);
 
@@ -563,9 +564,10 @@ public class GP extends GPContainer {
             GPNode node = ns.chooseNodeWithArgs(args);
             if (node.value() != val) {
                 //replace old function with new one
+                swapPos = parentRef.count;
+                if(swapPos >= 3) return;
                 g.node = node;
                 swapTree = randTree;
-                swapPos = parentRef.count;
                 break;
             }
         }
@@ -644,7 +646,6 @@ public class GP extends GPContainer {
 
         //pick random adf branch to cut from
         int randTree = GPRandom.nextInt(dad.containerSize());
-        if(randTree == 0) return parents;
         dad.crossTree = randTree;
         mum.crossTree = randTree;
 
@@ -676,6 +677,8 @@ public class GP extends GPContainer {
             dad.mumCross = mumCut.count;
             mum.dadCross = mumCut.count;
             mum.mumCross = dadCut.count;
+
+            if(mumCut.count <= 3 || dadCut.count <= 3) return parents;
 
             //display results before crossover
             //dadDepth = dadRef.getGene().depth();
