@@ -23,7 +23,7 @@ public class Main extends Application {
         Text text = new Text("Will display images later.");
         rootPane = new StackPane(text);
         vbox.getChildren().add(rootPane);
-        Scene scene = new Scene(vbox, 1280, 256);
+        Scene scene = new Scene(vbox, 1280, 512);
         stage.setScene(scene);
         stage.show();
 

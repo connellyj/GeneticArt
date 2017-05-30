@@ -682,7 +682,7 @@ public class GPPopulation extends GPContainer {
                 }
             }
             selected[0] = result[0];
-            if(numToSelect == 2) selected[1] = result[0];
+            if(numToSelect == 2) selected[1] = range.getRandom();
         } else {
             //method designed to select only 1 or 2 elements
             if (numToSelect > 2)
