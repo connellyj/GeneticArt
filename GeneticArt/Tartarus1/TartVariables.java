@@ -24,9 +24,9 @@ import gpjpp.*;
 
 public class TartVariables extends GPVariables {
 
-    int ImageDimension = 10;
+    public int ImageDimension = 10;
     int NumTestImages = 10;
-    int EvalType = 1;
+    public int EvalType = 1;
 
     // simulation grid, not read from file but created during run
     // included here for easy access in any class/function

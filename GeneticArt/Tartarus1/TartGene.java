@@ -42,7 +42,7 @@ public class TartGene extends GPGene {
     public GPGene createChild(GPNode gpo) { return new TartGene(gpo); }
 
     //called by TartGP.evaluate() for main branch of each GP
-    int evaluate(TartVariables cfg, TartGP gp, PixelInfo pixelInfo, int rgb) {
+    public int evaluate(TartVariables cfg, TartGP gp, PixelInfo pixelInfo, int rgb) {
 
         int arg1, arg2, arg3, result;
         switch (node.value()) {

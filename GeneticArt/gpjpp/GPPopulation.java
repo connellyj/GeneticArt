@@ -18,8 +18,23 @@
 
 package gpjpp;
 
+import Tartarus1.*;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.scene.control.ChoiceDialog;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.stage.Popup;
+
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Optional;
 
 /**
  * Stores a fixed-size array of genetic programs of type 
@@ -592,73 +607,151 @@ public class GPPopulation extends GPContainer {
     protected void tournamentSelection(int[] selected, int numToSelect,
         boolean selectWorst, GPPopulationRange range) {
 
-        //method designed to select only 1 or 2 elements
-        if (numToSelect > 2)
-            throw new RuntimeException("numToSelect must not exceed 2");
-
-        //arbitrarily initialize two best or worst elements
-        int i;
-        int first = range.getRandom();
-        int second = range.getRandom();
-        GP firstGP = (GP)get(first);
-        GP secondGP = (GP)get(second);
-        int ith;
-        GP ithGP;
-
-        if (selectWorst) {
-            //select two worst elements from tournament
-            if (firstGP.betterThan(secondGP)) {
-                int tmp = first;
-                first = second;
-                second = tmp;
-                GP tmpGP = firstGP;
-                firstGP = secondGP;
-                secondGP = tmpGP;
+        if(((TartVariables)cfg).EvalType == 0) {
+            final boolean[] running = {true};
+            final int[] result = {0};
+            GP[] gps = new GP[cfg.TournamentSize];
+            int[] gpIndex = new int[cfg.TournamentSize];
+            for(int i = 0; i < cfg.TournamentSize; i++) {
+                gpIndex[i] = range.getRandom();
+                gps[i] = (GP)get(gpIndex[i]);
             }
-            for (i = 2; i < cfg.TournamentSize; i++) {
-                ith = range.getRandom();
-                ithGP = (GP)get(ith);
-                if (!ithGP.betterThan(firstGP)) {
-                    second = first;
-                    secondGP = firstGP;
-                    first = ith;
-                    firstGP = ithGP;
-                } else if (secondGP.betterThan(ithGP)) {
-                    second = ith;
-                    secondGP = ithGP;
+            Task task = new Task<Integer>() {
+                @Override
+                protected Integer call() throws Exception {
+                    TartVariables tcfg = (TartVariables) cfg;
+                    Grid[] grids = new Grid[cfg.TournamentSize];
+                    for(int k = 0; k < tcfg.TournamentSize; k++) {
+                        tcfg.createGrid();
+                        for (int i=0; i<tcfg.ImageDimension * tcfg.ImageDimension; i++) {
+                            PixelInfo pixelInfo = new PixelInfo(i, tcfg.ImageDimension, tcfg.dozerGrid.colors);
+                            TartGene top = ((TartGene)gps[k].get(0));
+                            int[] results = new int[3];
+                            for(int j = 0; j < 3; j++) {
+                                try {
+                                    results[j] = Math.abs(((TartGene)top.get(j)).evaluate(tcfg, (TartGP)gps[j], pixelInfo, j)) % Grid.numColors;
+                                } catch (IndexOutOfBoundsException e) {
+                                    System.out.println("*****some tree got its top rgb evolved out*****");
+                                    results[j] = 1;
+                                }
+                            }
+                            tcfg.dozerGrid.colorPixel(results);
+                        }
+                        grids[k] = tcfg.dozerGrid;
+                    }
+                    ImageView[] imageViews = new ImageView[tcfg.TournamentSize];
+                    for(int n = 0; n < tcfg.TournamentSize; n++) {
+                        WritableImage image = new WritableImage(tcfg.ImageDimension, tcfg.ImageDimension);
+                        PixelWriter p = image.getPixelWriter();
+                        for(int x = 0; x < tcfg.ImageDimension; x++) {
+                            for(int y = 0; y < tcfg.ImageDimension; y++) {
+                                p.setColor(x, y, grids[n].colors.get(tcfg.ImageDimension * y + x));
+                            }
+                        }
+                        ImageView imageView = new ImageView(image);
+                        imageView.setPreserveRatio(true);
+                        imageView.setFitWidth(256);
+                        imageView.setSmooth(false);
+                        imageViews[n] = imageView;
+                    }
+                    FlowPane flowPane = new FlowPane();
+                    flowPane.getChildren().addAll(imageViews);
+                    Main.rootPane.getChildren().clear();
+                    Main.rootPane.getChildren().add(flowPane);
+                    ChoiceDialog<Integer> dialog = new ChoiceDialog<>();
+                    for(int p = 0; p < tcfg.TournamentSize; p++) {
+                        dialog.getItems().add(p);
+                    }
+                    Optional<Integer> result = dialog.showAndWait();
+                    return result.orElse(0);
+                }
+
+                @Override
+                protected void succeeded() {
+                    super.succeeded();
+                    result[0] = gpIndex[this.getValue()];
+                    running[0] = false;
+                }
+            };
+            Platform.runLater(task);
+            while(running[0]) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
+            selected[0] = result[0];
+            if(numToSelect == 2) selected[1] = result[0];
         } else {
-            //select two best elements from tournament
-            if (secondGP.betterThan(firstGP)) {
-                int tmp = first;
-                first = second;
-                second = tmp;
-                GP tmpGP = firstGP;
-                firstGP = secondGP;
-                secondGP = tmpGP;
-            }
-            for (i = 2; i < cfg.TournamentSize; i++) {
-                ith = range.getRandom();
-                ithGP = (GP)get(ith);
-                if (!firstGP.betterThan(ithGP)) {
-                    //ith is better than or same as first, demote first
-                    second = first;
-                    secondGP = firstGP;
-                    first = ith;
-                    firstGP = ithGP;
-                } else if (ithGP.betterThan(secondGP)) {
-                    //ith is better than second, replace second
-                    second = ith;
-                    secondGP = ithGP;
+            //method designed to select only 1 or 2 elements
+            if (numToSelect > 2)
+                throw new RuntimeException("numToSelect must not exceed 2");
+
+            //arbitrarily initialize two best or worst elements
+            int i;
+            int first = range.getRandom();
+            int second = range.getRandom();
+            GP firstGP = (GP)get(first);
+            GP secondGP = (GP)get(second);
+            int ith;
+            GP ithGP;
+
+            if (selectWorst) {
+                //select two worst elements from tournament
+                if (firstGP.betterThan(secondGP)) {
+                    int tmp = first;
+                    first = second;
+                    second = tmp;
+                    GP tmpGP = firstGP;
+                    firstGP = secondGP;
+                    secondGP = tmpGP;
+                }
+                for (i = 2; i < cfg.TournamentSize; i++) {
+                    ith = range.getRandom();
+                    ithGP = (GP)get(ith);
+                    if (!ithGP.betterThan(firstGP)) {
+                        second = first;
+                        secondGP = firstGP;
+                        first = ith;
+                        firstGP = ithGP;
+                    } else if (secondGP.betterThan(ithGP)) {
+                        second = ith;
+                        secondGP = ithGP;
+                    }
+                }
+            } else {
+                //select two best elements from tournament
+                if (secondGP.betterThan(firstGP)) {
+                    int tmp = first;
+                    first = second;
+                    second = tmp;
+                    GP tmpGP = firstGP;
+                    firstGP = secondGP;
+                    secondGP = tmpGP;
+                }
+                for (i = 2; i < cfg.TournamentSize; i++) {
+                    ith = range.getRandom();
+                    ithGP = (GP)get(ith);
+                    if (!firstGP.betterThan(ithGP)) {
+                        //ith is better than or same as first, demote first
+                        second = first;
+                        secondGP = firstGP;
+                        first = ith;
+                        firstGP = ithGP;
+                    } else if (ithGP.betterThan(secondGP)) {
+                        //ith is better than second, replace second
+                        second = ith;
+                        secondGP = ithGP;
+                    }
                 }
             }
-        }
 
-        //store the selected indices
-        selected[0] = first;
-        if (numToSelect == 2)
-            selected[1] = second;
+            //store the selected indices
+            selected[0] = first;
+            if (numToSelect == 2)
+                selected[1] = second;
+        }
     }
 
     /**

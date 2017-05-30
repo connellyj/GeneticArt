@@ -55,7 +55,7 @@ public class Grid {
     }
 
     public enum EvalTypes {
-        HUMAN, GRADIENT, RANDOM
+        HUMAN, GRADIENT, RANDOM, SIMILAR
     }
 
     public static final int numColors = DiscreteColor.values().length;
@@ -76,6 +76,7 @@ public class Grid {
         discreteColors.add(Color.rgb(127, 0, 255));
         discreteColors.add(Color.rgb(255, 0, 255));
         discreteColors.add(Color.rgb(255, 0, 127));
+
     }
 
     public void colorPixel(int[] rgb) {
@@ -89,31 +90,8 @@ public class Grid {
     }
 
     public static int getIntFromColor(Color c) {
-        int R = (int)Math.round(255 * c.getRed());
-        int G = (int) Math.round(255 * c.getGreen());
-        int B = (int)Math.round(255 * c.getBlue());
-
-        R = (R << 16) & 0x00FF0000;
-        G = (G << 8) & 0x0000FF00;
-        B = B & 0x000000FF;
-
-        int ret = 0xFF000000 | R | G | B;
-        return ret;
-    }
-
-    private double calcStdDev() {
-        double mean = 0.0;
-        for(int i = 0; i < imageDimension * imageDimension; i++) {
-            mean += getIntFromColor(colors.get(i));
-        }
-        if(mean != 0.0) mean /= (imageDimension * imageDimension);
-        double stdev = 0;
-        for(int i = 0; i < imageDimension * imageDimension; i++) {
-            stdev += Math.pow(getIntFromColor(colors.get(i)) - mean, 2.0);
-        }
-        stdev /= numColors;
-        stdev = Math.sqrt(stdev);
-        return stdev;
+        java.awt.Color color = new java.awt.Color((float)c.getRed(), (float)c.getGreen(), (float)c.getBlue());
+        return color.getRGB();
     }
 
     private int humanEval() {
@@ -133,7 +111,7 @@ public class Grid {
     }
 
     private boolean isGradient(int i) {
-        int low = 1000;
+        int low = 500;
         int high = 20000;
         int northIndex = -1;
         int northEastIndex = -1;
@@ -191,8 +169,51 @@ public class Grid {
 
     private int gradientEval() {
         int fitness = imageDimension * imageDimension;
+        if(calcStdDev() < 50000000) return fitness;
         for(int i = 0; i < imageDimension * imageDimension; i++) {
             if(isGradient(i)) fitness--;
+        }
+        return fitness;
+    }
+
+    public static boolean areSimilar(Color c1, Color c2) {
+        double r = Math.abs(c1.getRed() - c2.getRed());
+        double g = Math.abs(c1.getGreen() - c2.getGreen());
+        double b = Math.abs(c1.getBlue() - c2.getBlue());
+        return r < 0.2 && r > 0.05 && g < 0.2 && g > 0.05 && b < 0.2 && b > 0.05;
+    }
+
+    private double calcStdDev() {
+        double mean = 0.0;
+        for(int i = 0; i < imageDimension * imageDimension; i++) {
+            mean += getIntFromColor(colors.get(i));
+        }
+        if(mean != 0.0) mean /= (imageDimension * imageDimension);
+        double stdev = 0;
+        for(int i = 0; i < imageDimension * imageDimension; i++) {
+            stdev += Math.pow(getIntFromColor(colors.get(i)) - mean, 2.0);
+        }
+        stdev /= numColors;
+        stdev = Math.sqrt(stdev);
+        return stdev;
+    }
+
+    private int similarEval() {
+        int fitness = imageDimension * imageDimension;
+        Random r = new Random();
+        for(int i = 0; i < imageDimension * imageDimension; i++) {
+            Color cur = colors.get(i);
+            Color north = new Color(r.nextDouble(), r.nextDouble(), r.nextDouble(), 1.0);
+            Color south = new Color(r.nextDouble(), r.nextDouble(), r.nextDouble(), 1.0);
+            Color east = new Color(r.nextDouble(), r.nextDouble(), r.nextDouble(), 1.0);
+            Color west = new Color(r.nextDouble(), r.nextDouble(), r.nextDouble(), 1.0);
+            if(i >= imageDimension) north = colors.get(i - imageDimension);
+            if(i < imageDimension * imageDimension - imageDimension) south = colors.get(i + imageDimension);
+            if(i > 0) west = colors.get(i - 1);
+            if(i < imageDimension * imageDimension - 1) east = colors.get(i + 1);
+            if(areSimilar(cur, north) && areSimilar(cur, south) && areSimilar(cur, east) && areSimilar(cur, west)) {
+                fitness--;
+            }
         }
         return fitness;
     }
@@ -202,13 +223,14 @@ public class Grid {
     public int calcFitness(EvalTypes evalType) {
         switch (evalType) {
             case HUMAN:
-                return humanEval();
+                return 0;
             case GRADIENT:
                 return gradientEval();
             case RANDOM:
                 Random r = new Random();
                 return r.nextInt(imageDimension);
-
+            case SIMILAR:
+                return similarEval();
         }
         return 0;
     }

@@ -13,17 +13,17 @@ public class Main extends Application {
 
     public static StackPane rootPane;
     public static boolean shouldRun = true;
+    public static Stage mainStage;
 
     public void start(Stage stage) {
+        mainStage = stage;
         Button button = new Button("Exit");
-        button.setOnAction((event) -> {
-            shouldRun = false;
-        });
+        button.setOnAction((event) -> shouldRun = false);
         VBox vbox = new VBox(button);
         Text text = new Text("Will display images later.");
         rootPane = new StackPane(text);
         vbox.getChildren().add(rootPane);
-        Scene scene = new Scene(vbox, 512, 512);
+        Scene scene = new Scene(vbox, 1280, 256);
         stage.setScene(scene);
         stage.show();
 
