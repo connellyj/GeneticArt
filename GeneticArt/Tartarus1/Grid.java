@@ -102,7 +102,7 @@ public class Grid {
                 equal++;
             }
         }
-        if(Math.abs(grads - equal) > 100) fitness = imageDimension * imageDimension;
+        if(Math.abs(grads - equal) > 200) fitness = imageDimension * imageDimension;
         if(calcStdDev() < 0.5) fitness = imageDimension * imageDimension;
         return fitness;
     }

@@ -15,7 +15,7 @@ tartarus.ini:
 The input file has some specifications specific to our GP:
 
 1. NumTestImages is how many images will be drawn and then evaluated and then averaged to find the final fitness (we often just left it as 1)
-2. ImageDimension is the height of the image (also the width because it's always a square), runs are fast with a size of 64, anything larger tends to take a long time
+2. ImageDimension is the height of the image (also the width because it's always a square). When having the computer evaluate fitnesses, the runs are fast with a size of 64, but anything larger tends to take a long time. With human evaluations, larger sizes around 512 pixels are recommended.
 3. EvalType is the type of evaluation used (will explain which eval type is which later, because it differs in the different representations)
 
 
@@ -36,10 +36,11 @@ We created multiple different representations for our GP. Each representation is
     9 - weighted evaluation: an image is good if some of the pixels evaluate well as a gradient, and some of them are the same as their neighboring pixels
     10 - blue-green evaluation: an image is good if each pixel is blue-green
     11 - symmetry evaluation: trys to make symmetrical images a better fitness
-2. karl_sims: now the GP deals only with vectors of length 3, so more colors and possible terminals are available
-    0 - 
+2. karl_sims: now the GP deals only with vectors of length 3, so more colors and possible terminals are available. Only human evaluation works well for this branch. Recommended settings in tartarus.ini for this are human evaluation (EvalType 0), a population size of 10, around 10 generations, and reasonable mutation and crossover rates. It might take a while to evolve out purely black or white imagages, but with a population of 10 that should definitely happen.
+    0 - human evaluation: you will be prompted to rate each image in the population from 10 to 1 (1 being best).
+    1 - gradient evaluation: images is rewarded for having nearby pixels of similar color. While this evaluation method worked fairly well in the previous branch, the results have been uninteresting since introducing rgb color vectors.
 3. rgb: the red, green, and blue values for each pixel are all evaluated with a different GP branch. The eval methods are as follows:
-    0 - human evaluation: you will be prompted to select parents, only works with tournament selection with a tournament size of 5
+    0 - human evaluation: you will be prompted to select parents, only works with tournament selection with a tournament size of 5, would recommend an image dimension of 256
     1 - gradient evaluation: attempting to be the same thing as gradient from the master branch, but also requires that the standard deviation be somewhat high
     2 - random evaluation: each image is assigned a random fitness
     3 - similar evaluation: an image is good if each pixel is similar to its north, south, east, west neighbors
