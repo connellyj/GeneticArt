@@ -37,6 +37,12 @@ public class ColorVector {
     public void add(int i) {
         for(int dude = 0; dude < 3; dude++) {
             rgbColor[dude] += i;
+            if (rgbColor[dude] > 1) {
+                rgbColor[dude] = 1;
+            }
+            if (rgbColor[dude] < -1) {
+                rgbColor[dude] = -1;
+            }
         }
     }
 
@@ -49,18 +55,30 @@ public class ColorVector {
     public void addColor(ColorVector c) {
         for(int dude = 0; dude < 3; dude++) {
             rgbColor[dude] += c.rgbColor[dude];
+            if (rgbColor[dude] > 1) {
+                rgbColor[dude] = 1;
+            }
         }
     }
 
     public void subtrColor(ColorVector c) {
         for(int dude = 0; dude < 3; dude++) {
             rgbColor[dude] -= c.rgbColor[dude];
+            if (rgbColor[dude] > 1) {
+                rgbColor[dude] = 1;
+            }
+            if (rgbColor[dude] < -1) {
+                rgbColor[dude] = -1;
+            }
         }
     }
 
     public void multColor(ColorVector c) {
         for(int dude = 0; dude < 3; dude++) {
             rgbColor[dude] *= c.rgbColor[dude];
+            if (rgbColor[dude] > 1) {
+                rgbColor[dude] = 1;
+            }
         }
     }
 
@@ -70,6 +88,9 @@ public class ColorVector {
             temp = c.rgbColor[dude];
             if (temp != 0) {
                 rgbColor[dude] /= temp;
+            }
+            if (rgbColor[dude] > 1) {
+                rgbColor[dude] = 1;
             }
         }
     }
@@ -107,10 +128,30 @@ public class ColorVector {
         }
     }
 
-    public void tan() {
+    public void arcTan() {
         for(int dude = 0; dude < 3; dude++) {
-            rgbColor[dude] = Math.tan(rgbColor[dude]);
+            rgbColor[dude] = Math.atan(rgbColor[dude]);
         }
+    }
+
+    public void log() {
+        for(int dude = 0; dude < 3; dude++) {
+            rgbColor[dude] = Math.log(rgbColor[dude]);
+        }
+    }
+
+    public void invert() {
+        for(int dude = 0; dude < 3; dude++) {
+            rgbColor[dude] = 1 - rgbColor[dude];
+        }
+    }
+
+    public double vecDiff(ColorVector vec) {
+        double diff = 0;
+        for(int dude = 0; dude < 3; dude++) {
+            diff = diff + Math.abs(rgbColor[dude] - vec.rgbColor[dude]);
+        }
+        return diff;
     }
 
     public void print() {
