@@ -203,7 +203,7 @@ public class Grid {
 
     private int stdevEval() {
         double stdev = calcStdDev();
-        return 100 - (int)Math.floor(stdev);
+        return imageDimension * imageDimension - (int)Math.floor(stdev);
     }
 
     private int rainbowEval() {
